@@ -2,21 +2,22 @@ import React, { Component } from 'react'
 import T from 'prop-types'
 
 export const StrapFormContextTypes = {
-  setAsyncValidators: T.func.isRequired,
-  setSyncValidators: T.func.isRequired,
-  setWarnValidators: T.func.isRequired,
-  getAsyncValidators: T.func.isRequired,
-  getSyncValidators: T.func.isRequired,
-  getWarnValidators: T.func.isRequired,
-  setDisabled: T.func.isRequired,
-  setReadOnly: T.func.isRequired,
   asyncValidateFor: T.func.isRequired,
+  getAsyncValidators: T.func.isRequired,
   getErrorsFor: T.func.isRequired,
+  getSyncValidators: T.func.isRequired,
+  getValueFor: T.func.isRequired,
+  getWarnValidators: T.func.isRequired,
   getWarningsFor: T.func.isRequired,
   handleOnBlur: T.func.isRequired,
   handleOnChange: T.func.isRequired,
+  setAsyncValidators: T.func.isRequired,
+  setDisabled: T.func.isRequired,
+  setReadOnly: T.func.isRequired,
+  setSyncValidators: T.func.isRequired,
+  setWarnValidators: T.func.isRequired,
+  setValue: T.func.isRequired,
   syncValidateFor: T.func.isRequired,
-  getValueFor: T.func.isRequired,
   isSubmitting: T.bool,
 }
 
@@ -79,6 +80,7 @@ export default function(Form) {
         getWarningsFor: this.getWarningsFor,
         isSubmitting: this.state.submitted,
         getValueFor: this.getValueFor,
+        setValue: this.setValue,
       }
     }
 
@@ -129,6 +131,9 @@ export default function(Form) {
 
     setWarnValidators = (inputName, value) =>
       this.setSomethingFor(inputName, value, 'warnValidators')
+
+    setValue = (inputName, value) =>
+      this.setSomethingFor(inputName, value, 'values')
 
     syncValidateFor = (inputName, value) => {
       const errorValidators = this.state.syncValidators[inputName]

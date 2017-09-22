@@ -36,6 +36,7 @@ export default function(Input) {
       readOnly: T.bool,
       validate: T.array,
       warn: T.array,
+      initialValue: T.any,
     }
 
     static defaultProps = {
@@ -45,6 +46,7 @@ export default function(Input) {
       readOnly: false,
       validate: [],
       warn: [],
+      initialValue: '',
     }
 
     state = {
@@ -60,6 +62,10 @@ export default function(Input) {
 
       this.context.setDisabled(this.props.name, this.props.disabled)
       this.context.setReadOnly(this.props.name, this.props.readOnly)
+
+      if (this.props.initialValue) {
+        this.context.setValue(this.props.name, this.props.initialValue)
+      }
     }
 
     handleOnChange = (e) => {

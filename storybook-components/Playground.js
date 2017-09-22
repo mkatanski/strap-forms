@@ -101,6 +101,7 @@ export default class Playground extends Component {
       inputs.push(<Input
         key={`TestInput${index + 1}`}
         name={`TestInput${index + 1}`}
+        initialValue={`TestInput${index + 1}`}
         validate={[
           value => (value !== 'test' ? 'Value must be "test"' : undefined),
         ]}
