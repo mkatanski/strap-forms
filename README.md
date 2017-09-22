@@ -21,7 +21,7 @@ To run that demo on your own computer:
 - Clone this repository
 - `npm install`
 - `npm run storybook`
-- Visit [http://localhost:6006/](http://localhost:6006/)
+- Visit [http://localhost:6006/](http://localhost:9000/)
 
 ## Getting Started
 

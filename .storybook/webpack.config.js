@@ -5,32 +5,30 @@ module.exports = {
     rules: [
       {
         test: /\.scss$/,
-        use: ['style-loader', 'raw-loader', 'sass-loader'],
-        include: [
-          path.resolve(__dirname, './'),
-          path.resolve(__dirname, '../css/'),
-        ],
-      },
-      {
-        test: /\.svg$/,
         use: [
+          { loader: 'style-loader' },
           {
-            loader: 'babel-loader',
-            query: {
-              presets: ['airbnb'],
+            loader: 'css-loader',
+            options: { importLoaders: 2 },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [
+                require('autoprefixer')({
+                  browsers: ['last 1 version', 'ie >= 11'],
+                }),
+              ],
             },
           },
           {
-            loader: 'react-svg-loader',
-            query: {
-              jsx: true,
+            loader: 'sass-loader',
+            options: {
+              includePaths: [path.resolve(__dirname, '..', 'node_modules')],
             },
           },
         ],
       },
     ],
-  },
-  resolve: {
-    extensions: ['.js', '.jsx'],
   },
 };

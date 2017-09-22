@@ -1,5 +1,1 @@
-// var DateRangePicker = require('./lib/components/DateRangePicker').default;
-
-module.exports = {
-  
-};
+export { Module, ModuleBody, ModuleHeader } from './components/Module'

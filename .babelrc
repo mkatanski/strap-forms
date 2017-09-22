@@ -1,11 +1,8 @@
 {
-  "presets": ["airbnb"],
-  "plugins": [
-    ["transform-replace-object-assign", "object.assign"],
+  "presets": [
+    "./scripts/env",
+    "react",
+    "stage-1"
   ],
-  "env": {
-    "test": {
-      "plugins": ["istanbul"]
-    }
-  }
+  "plugins": ["transform-object-assign"]
 }
