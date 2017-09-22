@@ -5,6 +5,9 @@ export const StrapFormContextTypes = {
   setAsyncValidators: T.func.isRequired,
   setSyncValidators: T.func.isRequired,
   setWarnValidators: T.func.isRequired,
+  getAsyncValidators: T.func.isRequired,
+  getSyncValidators: T.func.isRequired,
+  getWarnValidators: T.func.isRequired,
   setDisabled: T.func.isRequired,
   setReadOnly: T.func.isRequired,
   asyncValidateFor: T.func.isRequired,
@@ -65,6 +68,9 @@ export default function(Form) {
         setSyncValidators: this.setSyncValidators,
         setWarnValidators: this.setWarnValidators,
         setAsyncValidators: this.setAsyncValidators,
+        getSyncValidators: this.getSyncValidators,
+        getWarnValidators: this.getWarnValidators,
+        getAsyncValidators: this.getAsyncValidators,
         setDisabled: this.setDisabled,
         setReadOnly: this.setReadOnly,
         syncValidateFor: this.syncValidateFor,
@@ -105,14 +111,9 @@ export default function(Form) {
     getWarningsFor = inputName => this.state.warnings[inputName]
     getValueFor = inputName => this.state.values[inputName] || ''
 
-    setSomethingFor = (inputName, value, property, omitFalsy = true) => {
-      if (!value && omitFalsy) {
-        return
-      }
-      const prop = this.state[property]
-      prop[inputName] = value
-      this.setState({ [property]: prop })
-    }
+    getAsyncValidators = (inputName) => this.state.asyncValidators[inputName]
+    getSyncValidators = (inputName) => this.state.syncValidators[inputName]
+    getWarnValidators = (inputName) => this.state.warnValidators[inputName]
 
     setDisabled = (inputName, value) =>
       this.setSomethingFor(inputName, value, 'disabled', false)
@@ -217,6 +218,15 @@ export default function(Form) {
     // ─── PRIVATE METHODS ─────────────────────────────────────────────
     //
     // Helpers, etc. for strapForm HoC
+
+    setSomethingFor = (inputName, value, property, omitFalsy = true) => {
+      if (!value && omitFalsy) {
+        return
+      }
+      const prop = this.state[property]
+      prop[inputName] = value
+      this.setState({ [property]: prop })
+    }
 
     dispatchUpdate = (override) => {
       const formState = Object.assign({}, {
