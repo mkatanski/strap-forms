@@ -72,8 +72,6 @@
     }
   },
   "peerDependencies": {
-    "carbon-components": "^7.0.0",
-    "carbon-icons": "^5.1.2 || ^6.0.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2"
   },
@@ -90,15 +88,16 @@
     "@storybook/addon-info": "^3.0.0",
     "@storybook/react": "^3.0.0",
     "babel-cli": "^6.24.1",
+    "babel-core": "^6.26.0",
     "babel-eslint": "^7.1.0",
     "babel-jest": "^18.0.0",
     "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.5.1",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-1": "^6.16.0",
+    "babel-preset-stage-3": "^6.24.1",
     "bowser": "^1.6.1",
-    "carbon-components": "^7.20.0",
-    "carbon-icons": "^6.1.0",
     "commitizen": "^2.9.5",
     "css-loader": "^0.28.4",
     "cz-conventional-changelog-components": "^1.0.0",

@@ -1,1 +1,2 @@
-export { Module, ModuleBody, ModuleHeader } from './components/Module'
+export StrapForm from './components/StrapForm'
+export StrapInput from './components/StrapInput'

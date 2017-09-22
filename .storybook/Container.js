@@ -8,7 +8,7 @@ export default class Container extends Component {
     return (
       <div
         style={{
-          padding: '3em',
+          padding: '1em',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

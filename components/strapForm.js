@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import T from 'prop-types'
 
 export const StrapFormContextTypes = {

@@ -1,7 +1,7 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import T from 'prop-types'
 
-import { StrapFormContextTypes } from './strapForm'
+import { StrapFormContextTypes } from './StrapForm'
 
 export const StrapInputPropTypes = {
   input: T.shape({

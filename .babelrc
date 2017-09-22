@@ -2,7 +2,9 @@
   "presets": [
     "./scripts/env",
     "react",
-    "stage-1"
+    "stage-3"
   ],
-  "plugins": ["transform-object-assign"]
+  "plugins": [
+    "transform-object-assign"
+  ]
 }

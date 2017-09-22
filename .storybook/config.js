@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import React from 'react';
 import { configure, setAddon, addDecorator } from '@storybook/react';
 import infoAddon from '@storybook/addon-info';
@@ -9,7 +10,7 @@ addDecorator(story => <Container story={story} />);
 setAddon(infoAddon);
 
 function loadStories() {
-  const req = require.context('./components', true, /\.js$/);
+  const req = require.context('../stories/', true, /\.js$/);
   req.keys().forEach(filename => req(filename));
 }
 
