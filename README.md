@@ -31,7 +31,7 @@ Ensure packages are installed with correct version numbers by running:
 
 ```sh
 (
-  export PKG=react-dates;
+  export PKG=strap-forms;
   npm info "$PKG" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g; s/ *//g' | xargs npm install --save "$PKG"
 )
 ```
