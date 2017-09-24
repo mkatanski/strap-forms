@@ -51,56 +51,156 @@ export default function(Input) {
 
     state = {
       touched: false,
-      // true if async validation for this input is running
       isValidating: false,
+      errors: {},
+      warnings: {},
+      value: this.props.initialValue || '',
+    }
+
+    constructor() {
+      super(...arguments)
+
+      this.isValidating = false
     }
 
     componentWillMount() {
-      this.context.setSyncValidators(this.props.name, this.props.validate)
-      this.context.setAsyncValidators(this.props.name, this.props.asyncValidation)
-      this.context.setWarnValidators(this.props.name, this.props.warn)
+      this.context.listenTo('onFormSubmit', this.handleOnFormSubmit)
+    }
 
-      this.context.setDisabled(this.props.name, this.props.disabled)
-      this.context.setReadOnly(this.props.name, this.props.readOnly)
+    isValid = errors => Object.keys(errors).length === 0
 
-      if (this.props.initialValue) {
-        this.context.setValue(this.props.name, this.props.initialValue)
+    dispatchEvent = (eventName, data) => {
+      const enhancedData = {
+        inputName: this.props.name,
+        ...data,
       }
+
+      return this.context.dispatchEvent(eventName, enhancedData)
+    }
+
+    performAsyncValidation = async (value) => {
+      this.dispatchEvent('onBeforeAsyncValidation', { value })
+      const asyncValidateMethod = this.props.asyncValidation
+      let message = undefined
+
+      if (!asyncValidateMethod || this.props.disabled || this.props.readOnly) {
+        return
+      }
+
+      try {
+        await asyncValidateMethod(value, this.state.values)
+      } catch (error) {
+        message =  error.message
+      }
+
+      this.dispatchEvent('onAfterAsyncValidation', {
+        message,
+      })
+
+      return message
+    }
+
+    performSyncValidation = (value) => {
+      const errorValidators = this.props.validate
+      const warnValidators = this.props.warn
+      const { errors, warnings } = this.state
+
+      if (this.props.disabled || this.props.readOnly) {
+        return
+      }
+
+      this.validate({
+        validators: errorValidators,
+        errors,
+        value,
+      })
+
+      this.validate({
+        validators: warnValidators,
+        errors: warnings,
+        value,
+      })
+
+      return { errors, warnings }
+    }
+
+    performFullValidation = async (value) => {
+      let asyncError = undefined
+      const validationResult = this.performSyncValidation(value)
+
+      if (this.isValid(validationResult.errors)) {
+        this.setState({ isValidating: true })
+        asyncError = await this.performAsyncValidation(value)
+        this.setState({ isValidating: false })
+      }
+
+      if (asyncError) {
+        validationResult.errors.async = asyncError
+      }
+
+      return validationResult
+    }
+
+    validate = ({ validators, errors, value }) => {
+      const inputErrors = errors || {}
+
+      if (!validators) { return }
+
+      validators.forEach((validator, index) => {
+        try {
+          const result = validator(value, this.state.values)
+          if (result) {
+            inputErrors[index] = result
+          } else if (inputErrors[index]) {
+            delete inputErrors[index]
+          }
+        } catch (e) {
+          // catch error
+        }
+      })
     }
 
     handleOnChange = (e) => {
       const value = e.target ? e.target.value : e
+      const errors = this.state.errors
 
-      this.syncValidate(value)
-      this.context.handleOnChange(this.props.name, value)
+      if (errors.async) {
+        delete errors.async
+      }
+
+      this.setState({ value, errors })
+      const validationResult = this.performSyncValidation(value)
+
+      this.dispatchEvent('onInputChange', {
+        value,
+        isValid: this.isValid(validationResult.errors),
+        ...validationResult,
+      })
+
+      this.setState({ ...validationResult })
     }
 
     handleOnBlur = async (e) => {
       const value = e.target ? e.target.value : e
+      const validationResult = await this.performFullValidation(value)
 
-      if (!this.state.touched) {
-        this.setState({ touched: true })
-      }
+      this.dispatchEvent('onInputBlur', {
+        value,
+        isValid: this.isValid(validationResult.errors),
+        ...validationResult,
+      })
 
-      if (this.syncValidate(value)) {
-        await this.asyncValidate(value)
-      }
-      this.context.handleOnBlur(this.props.name, value)
+      this.setState({...validationResult, touched: true, value })
     }
 
-    syncValidate = value => this.context.syncValidateFor(this.props.name, value)
-
-    asyncValidate = async (value) => {
-      this.setState({ isValidating: true })
-      await this.context.asyncValidateFor(this.props.name, value)
-      this.setState({ isValidating: false })
+    handleOnFormSubmit = async () => {
+      const validationResult = await this.performFullValidation(this.state.value)
+      this.setState({ ...validationResult, touched: true })
+      return this.isValid(validationResult.errors)
     }
 
     render() {
-      const errors = this.context.getErrorsFor(this.props.name)
-      const warnings = this.context.getWarningsFor(this.props.name)
-      const value = this.context.getValueFor(this.props.name)
-
+      const { errors, warnings, value } = this.state
       const props = {
         input: {
           disabled: this.props.disabled,
@@ -111,8 +211,8 @@ export default function(Input) {
           readOnly: this.props.readOnly,
           value,
         },
-        hasErrors: errors && Object.keys(errors).length !== 0,
-        hasWarnings: warnings && Object.keys(warnings).length !== 0,
+        hasErrors: errors && !this.isValid(errors),
+        hasWarnings: warnings && !this.isValid(warnings),
         errors,
         warnings,
         touched: this.state.touched || this.context.isSubmitting,

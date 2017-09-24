@@ -79,20 +79,19 @@ const fetchSimulate = ms => new Promise(resolve => setTimeout(resolve, ms))
 export default class Playground extends Component {
 
   state = {
-    canSubmit: false,
+    canSubmit: true,
   }
 
-  handleFormSubmit = (values) => {
+  handleFormSubmit = ({values}) => {
     console.log('The form is submitting', values)
   }
 
   handleFormUpdate = ({ isValid, isPristine, isValidating }) => {
-    // console.log('update', isValid, isPristine)
-    this.setState({ canSubmit: (isPristine || isValid) && !isValidating })
-  }
+    const canSubmit = (isPristine || isValid) && !isValidating
 
-  handleValuesChange = (values) => {
-    // console.log(values)
+    if (this.state.canSubmit !== canSubmit) {
+      this.setState({ canSubmit })
+    }
   }
 
   renderInputs = (count) => {
@@ -108,7 +107,7 @@ export default class Playground extends Component {
         warn={[
           value => (value.length > 4 ? 'Value should be less then 4 characters' : undefined),
         ]}
-        asyncValidation={value => fetchSimulate(1000).then(() => {
+        asyncValidation={value => fetchSimulate(index * 1000).then(() => {
           if (value === 'test') {
             throw new Error('This name is forbidden')
           }
@@ -122,7 +121,8 @@ export default class Playground extends Component {
     return (
       <Form
         onSubmit={this.handleFormSubmit}
-        onFormUpdate={this.handleFormUpdate}
+        onInputChange={this.handleFormUpdate}
+        onInputBlur={this.handleFormUpdate}
         onValuesChange={this.handleValuesChange}
       >
         {this.renderInputs(10)}

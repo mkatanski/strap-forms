@@ -2,23 +2,8 @@ import React, { Component } from 'react'
 import T from 'prop-types'
 
 export const StrapFormContextTypes = {
-  asyncValidateFor: T.func.isRequired,
-  getAsyncValidators: T.func.isRequired,
-  getErrorsFor: T.func.isRequired,
-  getSyncValidators: T.func.isRequired,
-  getValueFor: T.func.isRequired,
-  getWarnValidators: T.func.isRequired,
-  getWarningsFor: T.func.isRequired,
-  handleOnBlur: T.func.isRequired,
-  handleOnChange: T.func.isRequired,
-  setAsyncValidators: T.func.isRequired,
-  setDisabled: T.func.isRequired,
-  setReadOnly: T.func.isRequired,
-  setSyncValidators: T.func.isRequired,
-  setWarnValidators: T.func.isRequired,
-  setValue: T.func.isRequired,
-  syncValidateFor: T.func.isRequired,
-  isSubmitting: T.bool,
+  listenTo: T.func,
+  dispatchEvent: T.func,
 }
 
 export default function(Form) {
@@ -26,279 +11,156 @@ export default function(Form) {
 
     static propTypes = {
       children: T.any,
-      onFormUpdate: T.func,
+      onInputChange: T.func,
+      onInputBlur: T.func,
       onSubmit: T.func,
-      onValuesChange: T.func,
     }
 
     static defaultProps = {
       children: null,
-      onFormUpdate: () => { },
+      onInputChange: () => { },
+      onInputBlur: () => { },
       onSubmit: () => { },
-      onValuesChange: () => { },
     }
 
     static childContextTypes = {
       ...StrapFormContextTypes,
     }
 
-    state = {
-      isValid: false,
-      isSubmitting: false,
-      submitted: false,
-      // true if the form is pristine,
-      // i.e.the values have NOT been altered
-      // from the original initialValues provided.
-      isPristine: true,
-      // true if any or all of the async validations is running
-      isValidating: [],
-      errors: {},
-      warnings: {},
-      values: {},
-      syncValidators: {},
-      asyncValidators: {},
-      warnValidators: {},
-      readOnly: {},
-      disabled: {},
+    constructor() {
+      super(...arguments)
+
+      this.listeners = {}
+      this.isSubmitting = false
+      this.submitted = false
+      this.isPristine = true
+      this.values = {}
+      this.errors = {}
+      this.warnings = {}
+      this.validating = []
     }
 
     getChildContext() {
       return {
-        handleOnBlur: this.handleOnBlur,
-        handleOnChange: this.handleOnChange,
-        setSyncValidators: this.setSyncValidators,
-        setWarnValidators: this.setWarnValidators,
-        setAsyncValidators: this.setAsyncValidators,
-        getSyncValidators: this.getSyncValidators,
-        getWarnValidators: this.getWarnValidators,
-        getAsyncValidators: this.getAsyncValidators,
-        setDisabled: this.setDisabled,
-        setReadOnly: this.setReadOnly,
-        syncValidateFor: this.syncValidateFor,
-        asyncValidateFor: this.asyncValidateFor,
-        getErrorsFor: this.getErrorsFor,
-        getWarningsFor: this.getWarningsFor,
-        isSubmitting: this.state.submitted,
-        getValueFor: this.getValueFor,
-        setValue: this.setValue,
+        listenTo: this.listenTo,
+        dispatchEvent: this.dispatchEvent,
       }
     }
 
     componentDidMount() {
-      this.dispatchUpdate()
+      this.listenTo('onInputChange', this.handleOnInputChange)
+      this.listenTo('onInputBlur', this.handleOnInputBlur)
+      this.listenTo('onBeforeAsyncValidation', this.handleOnBeforeAsyncValidation)
+      this.listenTo('onAfterAsyncValidation', this.handleOnAfterAsyncValidation)
     }
 
     get isValid() {
-      if (Object.keys(this.state.errors).length === 0) {
+      if (Object.keys(this.errors).length === 0) {
         return true
       }
 
-      let isValid = true
-      Object.keys(this.state.errors).forEach((errKey) => {
-        if (Object.keys(this.state.errors[errKey]).length !== 0) {
-          isValid = false
+      let _isValid = true
+      Object.keys(this.errors).forEach((errKey) => {
+        if (Object.keys(this.errors[errKey]).length !== 0) {
+          _isValid = false
         }
       })
 
-      return isValid
+      return _isValid
     }
 
-    //
-    // ─── CONTEXT METHODS ─────────────────────────────────────────────
-    //
-    // Methods that are passed down via context and are triggered directly
-    // from child components
+    isArray = (o) => Object.prototype.toString.call(o) !== '[object Array]'
 
-    getErrorsFor = inputName => this.state.errors[inputName]
-    getWarningsFor = inputName => this.state.warnings[inputName]
-    getValueFor = inputName => this.state.values[inputName] || ''
+    dispatchEvent = (eventName, eventData) => {
+      const listenersResults = []
 
-    getAsyncValidators = (inputName) => this.state.asyncValidators[inputName]
-    getSyncValidators = (inputName) => this.state.syncValidators[inputName]
-    getWarnValidators = (inputName) => this.state.warnValidators[inputName]
-
-    setDisabled = (inputName, value) =>
-      this.setSomethingFor(inputName, value, 'disabled', false)
-
-    setReadOnly = (inputName, value) =>
-      this.setSomethingFor(inputName, value, 'readOnly', false)
-
-    setAsyncValidators = (inputName, value) =>
-      this.setSomethingFor(inputName, value, 'asyncValidators')
-
-    setSyncValidators = (inputName, value) =>
-      this.setSomethingFor(inputName, value, 'syncValidators')
-
-    setWarnValidators = (inputName, value) =>
-      this.setSomethingFor(inputName, value, 'warnValidators')
-
-    setValue = (inputName, value) =>
-      this.setSomethingFor(inputName, value, 'values')
-
-    syncValidateFor = (inputName, value) => {
-      const errorValidators = this.state.syncValidators[inputName]
-      const warnValidators = this.state.warnValidators[inputName]
-      const { errors, warnings } = this.state
-
-      if (this.state.disabled[inputName] || this.state.readOnly[inputName]) {
-        return
+      if (this.isArray(this.listeners[eventName])) {
+        return undefined
       }
 
-      const isValid = this.performSyncValidation({
-        validators: errorValidators,
-        errors,
-        value,
-        inputName,
+      this.listeners[eventName].forEach((listener) => {
+        const result = listener(eventData)
+        if (result !== undefined) {
+          listenersResults.push(result)
+        }
       })
 
-      this.performSyncValidation({
-        validators: warnValidators,
-        errors: warnings,
-        value,
+      return listenersResults
+    }
+
+    listenTo = (eventName, func) => {
+      if (this.isArray(this.listeners[eventName])) {
+        this.listeners[eventName] = []
+      }
+
+      this.listeners[eventName].push(func)
+    }
+
+    handleOnBeforeAsyncValidation = (e) => {
+      this.validating.push(e.inputName)
+    }
+
+    handleOnAfterAsyncValidation = (e) => {
+      const i = this.validating.indexOf(e.inputName)
+      this.validating.splice(i, 1)
+    }
+
+    handleOnInputBlur = ({ value, inputName, errors, warnings }) => {
+      this.isPristine = false
+      this.errors[inputName] = errors
+      this.warnings[inputName] = warnings
+
+      this.values[inputName] = value
+
+      this.props.onInputBlur({
+        errors: this.errors,
+        warnings: this.warnings,
         inputName,
-      })
-
-      this.setState({ isValid: this.isValid, errors, warnings })
-      this.dispatchUpdate()
-      return isValid
-    }
-
-    asyncValidateFor = async (inputName, value) => {
-      const asyncValidateMethod = this.state.asyncValidators[inputName]
-      const { errors } = this.state
-      errors[inputName] = {}
-
-      if (!asyncValidateMethod ||
-        this.state.disabled[inputName] ||
-        this.state.readOnly[inputName]) {
-        return
-      }
-
-      const { isValidating } = this.state
-      isValidating.push(inputName)
-      this.setState({ isValidating })
-      this.dispatchUpdate()
-
-      try {
-        await asyncValidateMethod(value, this.state.values)
-      } catch (error) {
-        const { message } = error
-        errors[inputName].async = message
-      }
-
-      isValidating.splice(isValidating.indexOf(inputName), 1)
-
-      this.setState({ isValid: this.isValid, errors, isValidating })
-      this.dispatchUpdate()
-    }
-
-    handleOnBlur = (inputName, value) => {
-      const { values } = this.state
-      values[inputName] = value
-      this.props.onValuesChange(values)
-
-      if (this.state.isPristine) {
-        this.setState({ isPristine: false })
-        this.dispatchUpdate({ isPristine: false })
-      }
-
-      this.setState({ values })
-    }
-
-    handleOnChange = (inputName, value) => {
-      const { errors, values } = this.state
-      const inputErrors = errors[inputName] || {}
-
-      values[inputName] = value
-      this.props.onValuesChange(values)
-
-      if (inputErrors.async) {
-        delete inputErrors.async
-      }
-
-      this.setState({ errors, values })
-    }
-
-    //
-    // ─── PRIVATE METHODS ─────────────────────────────────────────────
-    //
-    // Helpers, etc. for strapForm HoC
-
-    setSomethingFor = (inputName, value, property, omitFalsy = true) => {
-      if (!value && omitFalsy) {
-        return
-      }
-      const prop = this.state[property]
-      prop[inputName] = value
-      this.setState({ [property]: prop })
-    }
-
-    dispatchUpdate = (override) => {
-      const formState = Object.assign({}, {
+        value,
         isValid: this.isValid,
-        isPristine: this.state.isPristine,
-        isSubmitting: this.state.isSubmitting,
-        errors: this.state.errors,
-        warnings: this.state.warnings,
-        isValidating: this.state.isValidating.length > 0,
-      }, override)
-      this.props.onFormUpdate(formState)
+        isPristine: this.isPristine,
+        isSubmitting: this.isSubmitting,
+        isValidating: this.validating.length !== 0,
+      })
     }
 
-    performSyncValidation = ({ validators, errors, inputName, value }) => {
-      const err = errors
-      const inputErrors = errors[inputName] || {}
-      let isValid = true
+    handleOnInputChange = ({ value, inputName, errors, warnings }) => {
+      this.errors[inputName] = errors
+      this.warnings[inputName] = warnings
 
-      if (!validators) {
-        return true
-      }
+      this.values[inputName] = value
 
-      validators.forEach((validator, index) => {
-        try {
-          const result = validator(value, this.state.values)
-          if (result) {
-            inputErrors[index] = result
-            isValid = false
-          } else if (inputErrors[index]) {
-            delete inputErrors[index]
-          }
-        } catch (e) {
-          // catch error
-        }
+      this.props.onInputChange({
+        errors: this.errors,
+        warnings: this.warnings,
+        inputName,
+        value,
+        isValid: this.isValid,
+        isPristine: this.isPristine,
+        isSubmitting: this.isSubmitting,
+        isValidating: this.validating.length !== 0,
       })
-
-      err[inputName] = inputErrors
-
-      return isValid
     }
 
     handleSubmit = async (event) => {
       event.preventDefault()
-      this.setState({ isSubmitting: true, submitted: true })
+      this.isSubmitting = true
+      this.submitted = true
+      const validationMethods = this.dispatchEvent('onFormSubmit', {})
+      const res = await Promise.all(validationMethods)
 
-      Object.keys(this.state.syncValidators).forEach((inputName) => {
-        this.syncValidateFor(inputName, this.state.values[inputName])
-      })
-
-      if (!this.isValid) { return }
-      const promises = []
-      Object.keys(this.state.asyncValidators).forEach((inputName) => {
-        promises.push(this.asyncValidateFor(inputName, this.state.values[inputName]))
-      })
-
-      await Promise.all(promises)
-      if (!this.isValid) { return }
+      // if any of validation result is
+      // false, break form submitting
+      if (res.includes(false)) {
+        return
+      }
 
       await this.props.onSubmit({
-        isPristine: this.state.isPristine,
-        isSubmitting: this.state.isSubmitting,
-        errors: this.state.errors,
-        warnings: this.state.warnings,
-        values: this.state.values,
+        isPristine: this.isPristine,
+        values: this.values,
       })
 
-      this.setState({ isSubmitting: false })
+      this.isSubmitting = false
     }
 
     render() {
