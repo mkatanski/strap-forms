@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import T from 'prop-types'
 
 import StrapForm from '../components/StrapForm'
+import StrapGroup from '../components/StrapGroup'
 import StrapInput, { StrapInputPropTypes } from '../components/StrapInput'
 
 class TestForm extends Component {
@@ -18,6 +19,18 @@ class TestForm extends Component {
       <form onSubmit={handleSubmit}>
         {this.props.children}
       </form>
+    )
+  }
+}
+
+class TestGroup extends Component {
+
+  render() {
+    return (
+      <div>
+        <p>Group</p>
+        {this.props.children}
+      </div>
     )
   }
 }
@@ -73,6 +86,7 @@ class TestInput extends Component {
 
 const Form = StrapForm(TestForm)
 const Input = StrapInput(TestInput)
+const Group = StrapGroup(TestGroup)
 
 const fetchSimulate = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -97,8 +111,7 @@ export default class Playground extends Component {
   renderInputs = (count) => {
     const inputs = []
     for (let index = 0; index < count; index += 1) {
-      inputs.push(<Input
-        key={`TestInput${index + 1}`}
+      inputs.push(<Group key={`TestInput${index + 1}`}><Input
         name={`TestInput${index + 1}`}
         initialValue={`TestInput${index + 1}`}
         validate={[
@@ -112,7 +125,7 @@ export default class Playground extends Component {
             throw new Error('This name is forbidden')
           }
         })}
-      />)
+      /></Group>)
     }
     return inputs
   }
@@ -125,7 +138,8 @@ export default class Playground extends Component {
         onInputBlur={this.handleFormUpdate}
         onValuesChange={this.handleValuesChange}
       >
-        {this.renderInputs(10)}
+        {this.renderInputs(4)}
+        <Group><Input name='lol' /></Group>
         <button type='submit' disabled={!this.state.canSubmit}>Submit</button>
       </Form>
     )

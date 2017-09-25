@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import T from 'prop-types'
 
+import { isValid, isArray } from './utils/helpers'
+
 export const StrapFormContextTypes = {
   listenTo: T.func,
   dispatchEvent: T.func,
@@ -54,27 +56,11 @@ export default function(Form) {
       this.listenTo('onAfterAsyncValidation', this.handleOnAfterAsyncValidation)
     }
 
-    get isValid() {
-      if (Object.keys(this.errors).length === 0) {
-        return true
-      }
-
-      let _isValid = true
-      Object.keys(this.errors).forEach((errKey) => {
-        if (Object.keys(this.errors[errKey]).length !== 0) {
-          _isValid = false
-        }
-      })
-
-      return _isValid
-    }
-
-    isArray = (o) => Object.prototype.toString.call(o) !== '[object Array]'
 
     dispatchEvent = (eventName, eventData) => {
       const listenersResults = []
 
-      if (this.isArray(this.listeners[eventName])) {
+      if (isArray(this.listeners[eventName])) {
         return undefined
       }
 
@@ -89,7 +75,7 @@ export default function(Form) {
     }
 
     listenTo = (eventName, func) => {
-      if (this.isArray(this.listeners[eventName])) {
+      if (isArray(this.listeners[eventName])) {
         this.listeners[eventName] = []
       }
 
@@ -117,7 +103,7 @@ export default function(Form) {
         warnings: this.warnings,
         inputName,
         value,
-        isValid: this.isValid,
+        isValid: isValid(this.errors),
         isPristine: this.isPristine,
         isSubmitting: this.isSubmitting,
         isValidating: this.validating.length !== 0,
@@ -135,7 +121,7 @@ export default function(Form) {
         warnings: this.warnings,
         inputName,
         value,
-        isValid: this.isValid,
+        isValid: isValid(this.errors),
         isPristine: this.isPristine,
         isSubmitting: this.isSubmitting,
         isValidating: this.validating.length !== 0,

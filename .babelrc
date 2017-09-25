@@ -5,6 +5,7 @@
     "stage-3"
   ],
   "plugins": [
-    "transform-object-assign"
+    "transform-object-assign",
+    "fbjs-scripts/babel-6/dev-expression"
   ]
 }
