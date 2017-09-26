@@ -1,41 +1,66 @@
-# StrapForms
-Lightweight, expandable, simple and fast to implement forms for React.js
+# strap-forms <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
 
-[![NPM version](http://img.shields.io/npm/v/strap-forms.svg?style=flat-square)](https://www.npmjs.com/package/strap-forms)
-[![NPM downloads](http://img.shields.io/npm/dm/strap-forms.svg?style=flat-square)](https://www.npmjs.com/package/strap-forms)
-[![Build Status](http://img.shields.io/travis//strap-forms/master.svg?style=flat-square)](https://travis-ci.org//strap-forms)
-[![Coverage Status](https://img.shields.io/coveralls//strap-forms.svg?style=flat-square)](https://coveralls.io//strap-forms)
-[![Dependency Status](http://img.shields.io/david//strap-forms.svg?style=flat-square)](https://david-dm.org//strap-forms)
->
+[![Build Status][travis-svg]][travis-url]
+[![dependency status][deps-svg]][deps-url]
+[![dev dependency status][dev-deps-svg]][dev-deps-url]
+[![License][license-image]][license-url]
 
-### How to Install
+> Lightweight, expandable, simple and fast to implement forms for React.js.
 
-```sh
-$ npm install strap-forms
-```
+![Logo](https://image.ibb.co/c5w9uQ/logo.png)
 
-### Getting Started
+- [Live Playground](#live-playground)
+- [Getting Started](#getting-started)
+  - [Install dependencies](#install-dependencies)
+  - [Include component](#include-component)
 
-...
+## Live Playground
 
-### How to Test
+To run that demo on your own computer:
 
-Run one, or a combination of the following commands to lint and test your code:
+- Clone this repository
+- `npm install`
+- `npm run storybook`
+- Visit [http://localhost:6006/](http://localhost:9000/)
 
-```sh
-$ npm run lint          # Lint the source code with ESLint
-$ npm test              # Run unit tests with Mocha
-$ npm run test:watch    # Run unit tests with Mocha, and watch files for changes
-$ npm run test:cover    # Run unit tests with code coverage by Istanbul
-```
+## Getting Started
 
-To launch the documentation site, run:
+### Install dependencies
+
+Ensure packages are installed with correct version numbers by running:
 
 ```sh
-$ npm install -g easystatic
-$ npm start
+(
+  export PKG=strap-forms;
+  npm info "$PKG" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g; s/ *//g' | xargs npm install --save "$PKG"
+)
 ```
 
-### License
+  Which produces and runs a command like:
 
-MIT © 2017
+  ```sh
+  npm install --save strap-forms reactstrap@>=#.## react@>=#.## react-dom@>=#.## react-addons-shallow-compare@>=#.##
+  ```
+
+### Include component
+
+```js
+// import core methods for creating your own
+// custom components / quick wrap native controls
+import { strapForm, strapInput } from 'strap-forms';
+
+// or import premade components (ie: reactstrap)
+import { Form, Input, InputGroup } from 'strap-forms/react-bootstrap'; // bootstrap v3
+import { Form, Input, InputGroup } from 'strap-forms/reactstrap'; // bootstrap v4
+```
+
+[package-url]: https://npmjs.org/package/strap-forms
+[npm-version-svg]: http://versionbadg.es/mkatanski/strap-forms.svg
+[travis-svg]: https://travis-ci.org/mkatanski/strap-forms.svg
+[travis-url]: https://travis-ci.org/mkatanski/strap-forms
+[deps-svg]: https://david-dm.org/mkatanski/strap-forms.svg
+[deps-url]: https://david-dm.org/mkatanski/strap-forms
+[dev-deps-svg]: https://david-dm.org/mkatanski/strap-forms/dev-status.svg
+[dev-deps-url]: https://david-dm.org/mkatanski/strap-forms#info=devDependencies
+[license-image]: https://img.shields.io/badge/license-MIT-blue.svg
+[license-url]: LICENSE

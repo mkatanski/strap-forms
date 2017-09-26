@@ -1,0 +1,8 @@
+---
+applications:
+- name: strap-forms
+  memory: 64M
+  buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git
+  root: storybook-static
+  routes:
+  - route: strap-forms-storybook.indust.co
