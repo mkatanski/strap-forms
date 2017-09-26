@@ -7,7 +7,8 @@
 
 > Lightweight, expandable, simple and fast to implement forms for React.js.
 
-![Logo](https://image.ibb.co/c5w9uQ/logo.png)
+
+![Logo](https://github.com/mkatanski/strap-forms/blob/master/logo.png)
 
 - [Live Playground](#live-playground)
 - [Getting Started](#getting-started)
