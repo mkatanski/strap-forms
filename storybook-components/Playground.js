@@ -6,7 +6,6 @@ import StrapGroup from '../components/StrapGroup'
 import StrapInput, { StrapInputPropTypes } from '../components/StrapInput'
 
 class TestForm extends Component {
-
   static propTypes = {
     children: T.any.isRequired,
     handleSubmit: T.func.isRequired,
@@ -24,7 +23,6 @@ class TestForm extends Component {
 }
 
 class TestGroup extends Component {
-
   render() {
     return (
       <div>
@@ -91,12 +89,11 @@ const Group = StrapGroup(TestGroup)
 const fetchSimulate = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 export default class Playground extends Component {
-
   state = {
     canSubmit: true,
   }
 
-  handleFormSubmit = ({values}) => {
+  handleFormSubmit = ({ values }) => {
     console.log('The form is submitting', values)
   }
 
@@ -139,8 +136,8 @@ export default class Playground extends Component {
         onValuesChange={this.handleValuesChange}
       >
         {this.renderInputs(4)}
-        <Group><Input name='lol' /></Group>
-        <button type='submit' disabled={!this.state.canSubmit}>Submit</button>
+        <Group><Input name="lol" /></Group>
+        <button type="submit" disabled={!this.state.canSubmit}>Submit</button>
       </Form>
     )
   }

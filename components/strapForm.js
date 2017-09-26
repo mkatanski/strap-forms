@@ -8,13 +8,12 @@ export const StrapFormContextTypes = {
   dispatchEvent: T.func,
 }
 
-export default function(Form) {
+export default function (Form) {
   class StrapForm extends Component {
-
     static propTypes = {
       children: T.any,
-      onInputChange: T.func,
       onInputBlur: T.func,
+      onInputChange: T.func,
       onSubmit: T.func,
     }
 
@@ -29,8 +28,8 @@ export default function(Form) {
       ...StrapFormContextTypes,
     }
 
-    constructor() {
-      super(...arguments)
+    constructor(...args) {
+      super(...args)
 
       this.listeners = {}
       this.isSubmitting = false
@@ -55,7 +54,6 @@ export default function(Form) {
       this.listenTo('onBeforeAsyncValidation', this.handleOnBeforeAsyncValidation)
       this.listenTo('onAfterAsyncValidation', this.handleOnAfterAsyncValidation)
     }
-
 
     dispatchEvent = (eventName, eventData) => {
       const listenersResults = []

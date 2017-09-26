@@ -13,9 +13,8 @@ export const StrapGroupPropTypes = {
   isPristine: T.bool,
 }
 
-export default function(Group) {
+export default function (Group) {
   class StrapGroup extends Component {
-
     static contextTypes = {
       ...StrapFormContextTypes,
     }
@@ -27,16 +26,16 @@ export default function(Group) {
     static defaultProps = {
     }
 
-    state = {
-      errors: {},
-      warnings: {},
-    }
-
-    constructor() {
-      super(...arguments)
+    constructor(...args) {
+      super(...args)
 
       this.inputNames = []
       this.isPristine = true
+    }
+
+    state = {
+      errors: {},
+      warnings: {},
     }
 
     componentWillMount() {

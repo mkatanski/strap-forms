@@ -3,14 +3,14 @@ export const isValid = (errors) => {
     return true
   }
 
-  let _isValid = true
+  let valid = true
   Object.keys(errors).forEach((errKey) => {
     if (Object.keys(errors[errKey]).length !== 0) {
-      _isValid = false
+      valid = false
     }
   })
 
-  return _isValid
+  return valid
 }
 
-export const isArray = (o) => Object.prototype.toString.call(o) !== '[object Array]'
+export const isArray = o => Object.prototype.toString.call(o) !== '[object Array]'

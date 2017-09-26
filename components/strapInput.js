@@ -21,9 +21,8 @@ export const StrapInputPropTypes = {
   isValidating: T.bool,
 }
 
-export default function(Input) {
+export default function (Input) {
   class StrapInput extends Component {
-
     static contextTypes = {
       ...StrapFormContextTypes,
     }
@@ -33,10 +32,10 @@ export default function(Input) {
       asyncValidation: T.func,
       children: T.any,
       disabled: T.bool,
+      initialValue: T.any,
       readOnly: T.bool,
       validate: T.array,
       warn: T.array,
-      initialValue: T.any,
     }
 
     static defaultProps = {
@@ -49,18 +48,18 @@ export default function(Input) {
       initialValue: '',
     }
 
+    constructor(...args) {
+      super(...args)
+
+      this.isValidating = false
+    }
+
     state = {
       touched: false,
       isValidating: false,
       errors: {},
       warnings: {},
       value: this.props.initialValue || '',
-    }
-
-    constructor() {
-      super(...arguments)
-
-      this.isValidating = false
     }
 
     componentWillMount() {
@@ -81,7 +80,7 @@ export default function(Input) {
     performAsyncValidation = async (value) => {
       this.dispatchEvent('onBeforeAsyncValidation', { value })
       const asyncValidateMethod = this.props.asyncValidation
-      let message = undefined
+      let message
 
       if (!asyncValidateMethod || this.props.disabled || this.props.readOnly) {
         return
@@ -90,7 +89,7 @@ export default function(Input) {
       try {
         await asyncValidateMethod(value, this.state.values)
       } catch (error) {
-        message =  error.message
+        message = error.message
       }
 
       this.dispatchEvent('onAfterAsyncValidation', {
@@ -125,7 +124,7 @@ export default function(Input) {
     }
 
     performFullValidation = async (value) => {
-      let asyncError = undefined
+      let asyncError
       const validationResult = this.performSyncValidation(value)
 
       if (this.isValid(validationResult.errors)) {
@@ -190,7 +189,7 @@ export default function(Input) {
         ...validationResult,
       })
 
-      this.setState({...validationResult, touched: true, value })
+      this.setState({ ...validationResult, touched: true, value })
     }
 
     handleOnFormSubmit = async () => {
