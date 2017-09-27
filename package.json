@@ -1,6 +1,6 @@
 {
   "name": "strap-forms",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Lightweight, expandable, simple and fast to implement forms for React.js",
   "main": "cjs/index.js",
   "repository": {
