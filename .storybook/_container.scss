@@ -1,8 +1,23 @@
 // $css--font-face: true;
 // $css--reset: true;
 
-// @import '~carbon-components/scss/globals/scss/styles.scss';
-
 input {
   font-size: 0.8em
+}
+
+.section-example {
+  border: 1px solid #F3EDED;
+  // padding: 0 1em 1em 1em;
+
+  &--title {
+    font-size: 0.6em;
+    text-transform: uppercase;
+    color: #E0D8D8;
+    margin-left: 0.7em;
+    display: inline-block;
+  }
+
+  &--inner {
+    margin: 1.4em;
+  }
 }
