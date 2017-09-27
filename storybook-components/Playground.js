@@ -88,7 +88,7 @@ const Group = StrapGroup(TestGroup)
 
 const fetchSimulate = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-export default class Playground extends Component {
+class Playground extends Component {
   state = {
     canSubmit: true,
   }
@@ -142,3 +142,6 @@ export default class Playground extends Component {
     )
   }
 }
+
+
+export default Playground

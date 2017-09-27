@@ -1,7 +1,7 @@
-import * as Carbon from '../index';
+import * as StrapForms from '../index'
 
-describe('Carbon Components React', () => {
+describe('StrapForms Components React', () => {
   it('can be imported using the correct path', () => {
-    expect(typeof Carbon).toBe('object')
-  });
-});
+    expect(typeof StrapForms).toBe('object')
+  })
+})
