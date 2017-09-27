@@ -48,11 +48,8 @@ Ensure packages are installed with correct version numbers by running:
 ```js
 // import core methods for creating your own
 // custom components / quick wrap native controls
-import { strapForm, strapInput } from 'strap-forms';
+import { strapForm, strapInput, strapGroup } from 'strap-forms';
 
-// or import premade components (ie: reactstrap)
-import { Form, Input, InputGroup } from 'strap-forms/react-bootstrap'; // bootstrap v3
-import { Form, Input, InputGroup } from 'strap-forms/reactstrap'; // bootstrap v4
 ```
 
 [package-url]: https://npmjs.org/package/strap-forms
