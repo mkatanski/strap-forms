@@ -22,7 +22,7 @@ To run that demo on your own computer:
 - Clone this repository
 - `npm install`
 - `npm run storybook`
-- Visit [http://localhost:6006/](http://localhost:9000/)
+- Visit [http://localhost:9000/](http://localhost:9000/)
 
 ## Getting Started
 
@@ -48,7 +48,7 @@ Ensure packages are installed with correct version numbers by running:
 ```js
 // import core methods for creating your own
 // custom components / quick wrap native controls
-import { strapForm, strapInput, strapGroup } from 'strap-forms';
+import { StrapForm, StrapInput, StrapGroup } from 'strap-forms';
 
 ```
 
