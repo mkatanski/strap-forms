@@ -8,13 +8,17 @@ export const StrapFormContextTypes = {
   dispatchEvent: T.func,
 }
 
+export const StrapFormPropTypes = {
+  onInputBlur: T.func,
+  onInputChange: T.func,
+  onSubmit: T.func,
+}
+
 export default function (Form) {
   class StrapForm extends Component {
     static propTypes = {
+      ...StrapFormPropTypes,
       children: T.any,
-      onInputBlur: T.func,
-      onInputChange: T.func,
-      onSubmit: T.func,
     }
 
     static defaultProps = {
@@ -58,7 +62,7 @@ export default function (Form) {
     dispatchEvent = (eventName, eventData) => {
       const listenersResults = []
 
-      if (isArray(this.listeners[eventName])) {
+      if (!isArray(this.listeners[eventName])) {
         return undefined
       }
 
@@ -73,7 +77,7 @@ export default function (Form) {
     }
 
     listenTo = (eventName, func) => {
-      if (isArray(this.listeners[eventName])) {
+      if (!isArray(this.listeners[eventName])) {
         this.listeners[eventName] = []
       }
 
@@ -131,11 +135,15 @@ export default function (Form) {
       this.isSubmitting = true
       this.submitted = true
       const validationMethods = this.dispatchEvent('onFormSubmit', {})
-      const res = await Promise.all(validationMethods)
+      let res = []
+      if (validationMethods) {
+        res = await Promise.all(validationMethods)
+      }
 
       // if any of validation result is
       // false, break form submitting
       if (res.includes(false)) {
+        this.isSubmitting = false
         return
       }
 

@@ -13,4 +13,4 @@ export const isValid = (errors) => {
   return valid
 }
 
-export const isArray = o => Object.prototype.toString.call(o) !== '[object Array]'
+export const isArray = o => Object.prototype.toString.call(o) === '[object Array]'

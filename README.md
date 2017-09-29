@@ -1,56 +1,50 @@
 # strap-forms <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
 
+Lightweight, expandable, simple and fast to implement forms for React.js.
+
 [![Build Status][travis-svg]][travis-url]
 [![dependency status][deps-svg]][deps-url]
 [![dev dependency status][dev-deps-svg]][dev-deps-url]
 [![License][license-image]][license-url]
 
-> Lightweight, expandable, simple and fast to implement forms for React.js.
-
 
 ![Logo](https://github.com/mkatanski/strap-forms/blob/master/logo.png)
 
-- [Live Playground](#live-playground)
-- [Getting Started](#getting-started)
-  - [Install dependencies](#install-dependencies)
-  - [Include component](#include-component)
+## About
+
+Strap Forms makes it easy to create and manage forms in React.js.
+
+What distinguishes Strap Forms from other similar packages is the simplicity of adding validation, including asynchronous, that can be performed independently on each input or at the same time when an attempt is made to send a form. Strap Forms allows you to quickly and easily create your own, optimized components, or use ready-made components based on "react-bootstrap" or "reactstrap". Yes, you do not have to write your own components, you can use the ready database to write applications even faster.
+
+**StrapForms does not force the use of redux.**
+
+## Documentation
+
+- Basic Usage Guide
+- Higher Order Components
+- Events System
+- Bootstrap Components
 
 ## Live Playground
 
-To run that demo on your own computer:
+To run demo on your own computer:
 
 - Clone this repository
 - `npm install`
 - `npm run storybook`
 - Visit [http://localhost:9000/](http://localhost:9000/)
 
-## Getting Started
+## Contribute
 
-### Install dependencies
+Let's make Strap Forms better! If you're interested in helping, all contributions are welcome and appreciated.
 
-Ensure packages are installed with correct version numbers by running:
+Check out the [Contributing document][CONTRIBUTING] for the details. Thanks!
 
-```sh
-(
-  export PKG=strap-forms;
-  npm info "$PKG" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g; s/ *//g' | xargs npm install --save "$PKG"
-)
-```
 
-  Which produces and runs a command like:
+## License
 
-  ```sh
-  npm install --save strap-forms reactstrap@>=#.## react@>=#.## react-dom@>=#.## react-addons-shallow-compare@>=#.##
-  ```
-
-### Include component
-
-```js
-// import core methods for creating your own
-// custom components / quick wrap native controls
-import { StrapForm, StrapInput, StrapGroup } from 'strap-forms';
-
-```
+This software is free to use under the MIT license.
+See the [LICENSE file][LICENSE] for license text and copyright information.
 
 [package-url]: https://npmjs.org/package/strap-forms
 [npm-version-svg]: http://versionbadg.es/mkatanski/strap-forms.svg
