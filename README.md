@@ -38,13 +38,13 @@ To run demo on your own computer:
 
 Let's make Strap Forms better! If you're interested in helping, all contributions are welcome and appreciated.
 
-Check out the [Contributing document](CONTRIBUTING.md) for the details. Thanks!
+Check out the [Contributing document](CONTRIBUTING) for the details. Thanks!
 
 
 ## License
 
 This software is free to use under the MIT license.
-See the [LICENSE file](LICENSE.md) for license text and copyright information.
+See the [LICENSE file](LICENSE) for license text and copyright information.
 
 [package-url]: https://npmjs.org/package/strap-forms
 [npm-version-svg]: http://versionbadg.es/mkatanski/strap-forms.svg
