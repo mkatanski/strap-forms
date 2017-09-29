@@ -54,7 +54,6 @@ class PureInput extends Component {
 const TestInput = StrapInput(PureInput)
 
 describe('StrapInput', () => {
-
   const checkChange = async (done, method, options) => {
     const { val, validate, warn, expected, disabled, readOnly, asyncValidation } = options
     const mockListenTo = jest.fn()
