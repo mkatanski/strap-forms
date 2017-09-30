@@ -93,16 +93,23 @@ export default function (Form) {
       this.validating.splice(i, 1)
     }
 
-    updateForm = ({ value, inputName, errors, warnings }) => {
-      this.errors[inputName] = errors
-      this.warnings[inputName] = warnings
-      this.values[inputName] = value
+    updateForm = (inputsData) => {
+      if (isArray(inputsData) && inputsData.length !== 0) {
+        inputsData.forEach((data) => {
+          try {
+            const { value, inputName, errors, warnings } = data
+            this.errors[inputName] = errors
+            this.warnings[inputName] = warnings
+            this.values[inputName] = value
+          } catch (e) {
+            // handle error
+          }
+        })
+      }
 
       const formData = {
         errors: this.errors,
         warnings: this.warnings,
-        inputName,
-        value,
         isValid: isValid(this.errors),
         isPristine: this.isPristine,
         isSubmitting: this.isSubmitting,
@@ -116,36 +123,46 @@ export default function (Form) {
 
     handleOnInputBlur = (inputOptions) => {
       this.isPristine = false
-      this.props.onInputBlur(this.updateForm(inputOptions))
+      const formData = {
+        ...this.updateForm([inputOptions]),
+        inputName: inputOptions.inputName,
+        value: inputOptions.value,
+      }
+      this.props.onInputBlur(formData)
     }
 
     handleOnInputChange = (inputOptions) => {
-      this.props.onInputChange(this.updateForm(inputOptions))
+      const formData = {
+        ...this.updateForm([inputOptions]),
+        inputName: inputOptions.inputName,
+        value: inputOptions.value,
+      }
+      this.props.onInputChange(formData)
     }
 
     handleSubmit = async (event) => {
       event.preventDefault()
       this.isSubmitting = true
       this.submitted = true
+      this.updateForm()
+
       const validationMethods = this.dispatchEvent('onFormSubmit', {})
       let res = []
       if (validationMethods) {
         res = await Promise.all(validationMethods)
       }
 
-      // if any of validation result is
-      // false, break form submitting
-      if (res.includes(false)) {
-        this.isSubmitting = false
-        return
+      this.updateForm(res)
+
+      if (isValid(this.errors)) {
+        await this.props.onSubmit({
+          isPristine: this.isPristine,
+          values: this.values,
+        })
       }
 
-      await this.props.onSubmit({
-        isPristine: this.isPristine,
-        values: this.values,
-      })
-
       this.isSubmitting = false
+      this.updateForm()
     }
 
     render() {

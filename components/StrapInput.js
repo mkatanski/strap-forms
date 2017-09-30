@@ -196,7 +196,11 @@ export default function (Input) {
     handleOnFormSubmit = async () => {
       const validationResult = await this.performFullValidation(this.state.value)
       this.setState({ ...validationResult, touched: true })
-      return this.isValid(validationResult.errors)
+      return {
+        inputName: this.props.name,
+        ...validationResult,
+        value: this.state.value,
+      }
     }
 
     render() {

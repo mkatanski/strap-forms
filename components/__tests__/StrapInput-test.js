@@ -505,7 +505,7 @@ describe('StrapInput', () => {
     done()
   })
 
-  it('returns validation state onFormSubmitEvent', async (done) => {
+  it('returns validation state onFormSubmit event', async (done) => {
     const mockDispatchEvent = jest.fn()
     const listeners = {}
     const listenTo = (eventName, method) => {
@@ -531,11 +531,21 @@ describe('StrapInput', () => {
 
     component.setState({ value: 'wrong_value' })
     let result = await listeners.onFormSubmit()
-    expect(result).toBe(false)
+    expect(result).toEqual({
+      errors: { 0: 'error' },
+      inputName: 'test_input_name',
+      value: 'wrong_value',
+      warnings: {},
+    })
 
     component.setState({ value: 'test_value' })
     result = await listeners.onFormSubmit()
-    expect(result).toBe(true)
+    expect(result).toEqual({
+      errors: {},
+      inputName: 'test_input_name',
+      value: 'test_value',
+      warnings: {},
+    })
 
     done()
   })

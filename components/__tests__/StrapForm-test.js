@@ -78,7 +78,14 @@ describe('StrapForm', () => {
     }
 
     expect(mocks[mockName].mock.calls[0][0]).toEqual(expectedFormData)
-    expect(instance.dispatchEvent.mock.calls[0][1]).toEqual(expectedFormData)
+    expect(instance.dispatchEvent.mock.calls[0][1]).toEqual({
+      errors: { testInput: errors },
+      warnings: { testInput: warnings },
+      isValid,
+      isPristine,
+      isSubmitting: false,
+      isValidating: false,
+    })
   }
 
   it('handle inputBlur event correctly with errors', () => {
@@ -130,7 +137,12 @@ describe('StrapForm', () => {
     const onSubmitMock = jest.fn()
     const component = shallow(<Form onSubmit={onSubmitMock} />)
     const instance = component.instance()
-    const validationPromise = new Promise(dispatch => dispatch(false))
+    const validationPromise = new Promise(dispatch => dispatch({
+      inputName: 'test_input',
+      errors: { 0: 'some error' },
+      warnings: { 0: 'some warning' },
+      value: 'invalid_value',
+    }))
 
     instance.dispatchEvent = jest.fn()
     instance.dispatchEvent.mockReturnValue([validationPromise])
@@ -138,9 +150,12 @@ describe('StrapForm', () => {
     expect(instance.submitted).toBe(false)
     await instance.handleSubmit({ preventDefault: preventDefaultMock })
 
-    expect(instance.dispatchEvent.mock.calls.length).toBe(1)
-    expect(instance.dispatchEvent.mock.calls[0][0]).toBe('onFormSubmit')
-    expect(instance.dispatchEvent.mock.calls[0][1]).toEqual({})
+    expect(instance.dispatchEvent.mock.calls.length).toBe(4)
+    expect(instance.dispatchEvent.mock.calls[0][0]).toBe('onFormUpdate')
+    expect(instance.dispatchEvent.mock.calls[1][0]).toBe('onFormSubmit')
+    expect(instance.dispatchEvent.mock.calls[2][0]).toBe('onFormUpdate')
+    expect(instance.dispatchEvent.mock.calls[3][0]).toBe('onFormUpdate')
+    expect(instance.dispatchEvent.mock.calls[1][1]).toEqual({})
     expect(onSubmitMock.mock.calls.length).toBe(0)
     expect(instance.submitted).toBe(true)
     expect(instance.isSubmitting).toBe(false)
@@ -153,7 +168,12 @@ describe('StrapForm', () => {
     const onSubmitMock = jest.fn()
     const component = shallow(<Form onSubmit={onSubmitMock} />)
     const instance = component.instance()
-    const validationPromise = new Promise(dispatch => dispatch(true))
+    const validationPromise = new Promise(dispatch => dispatch({
+      inputName: 'test_input',
+      errors: {},
+      warnings: { 0: 'some warning' },
+      value: 'invalid_value',
+    }))
 
     instance.dispatchEvent = jest.fn()
     instance.dispatchEvent.mockReturnValue([validationPromise])
@@ -161,13 +181,16 @@ describe('StrapForm', () => {
     expect(instance.submitted).toBe(false)
     await instance.handleSubmit({ preventDefault: preventDefaultMock })
 
-    expect(instance.dispatchEvent.mock.calls.length).toBe(1)
-    expect(instance.dispatchEvent.mock.calls[0][0]).toBe('onFormSubmit')
-    expect(instance.dispatchEvent.mock.calls[0][1]).toEqual({})
+    expect(instance.dispatchEvent.mock.calls.length).toBe(4)
+    expect(instance.dispatchEvent.mock.calls[0][0]).toBe('onFormUpdate')
+    expect(instance.dispatchEvent.mock.calls[1][0]).toBe('onFormSubmit')
+    expect(instance.dispatchEvent.mock.calls[2][0]).toBe('onFormUpdate')
+    expect(instance.dispatchEvent.mock.calls[3][0]).toBe('onFormUpdate')
+    expect(instance.dispatchEvent.mock.calls[1][1]).toEqual({})
     expect(onSubmitMock.mock.calls.length).toBe(1)
     expect(onSubmitMock.mock.calls[0][0]).toEqual({
       isPristine: true,
-      values: {},
+      values: { test_input: 'invalid_value' },
     })
     expect(instance.submitted).toBe(true)
     expect(instance.isSubmitting).toBe(false)
