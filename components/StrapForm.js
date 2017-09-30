@@ -93,14 +93,12 @@ export default function (Form) {
       this.validating.splice(i, 1)
     }
 
-    handleOnInputBlur = ({ value, inputName, errors, warnings }) => {
-      this.isPristine = false
+    updateForm = ({ value, inputName, errors, warnings }) => {
       this.errors[inputName] = errors
       this.warnings[inputName] = warnings
-
       this.values[inputName] = value
 
-      this.props.onInputBlur({
+      const formData = {
         errors: this.errors,
         warnings: this.warnings,
         inputName,
@@ -109,25 +107,20 @@ export default function (Form) {
         isPristine: this.isPristine,
         isSubmitting: this.isSubmitting,
         isValidating: this.validating.length !== 0,
-      })
+      }
+
+      this.dispatchEvent('onFormUpdate', formData)
+
+      return formData
     }
 
-    handleOnInputChange = ({ value, inputName, errors, warnings }) => {
-      this.errors[inputName] = errors
-      this.warnings[inputName] = warnings
+    handleOnInputBlur = (inputOptions) => {
+      this.isPristine = false
+      this.props.onInputBlur(this.updateForm(inputOptions))
+    }
 
-      this.values[inputName] = value
-
-      this.props.onInputChange({
-        errors: this.errors,
-        warnings: this.warnings,
-        inputName,
-        value,
-        isValid: isValid(this.errors),
-        isPristine: this.isPristine,
-        isSubmitting: this.isSubmitting,
-        isValidating: this.validating.length !== 0,
-      })
+    handleOnInputChange = (inputOptions) => {
+      this.props.onInputChange(this.updateForm(inputOptions))
     }
 
     handleSubmit = async (event) => {

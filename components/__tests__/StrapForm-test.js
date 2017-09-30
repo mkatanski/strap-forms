@@ -37,6 +37,7 @@ describe('StrapForm', () => {
       <Form onInputBlur={mocks.onInputBlur} onInputChange={mocks.onInputChange} />
     )
     const instance = component.instance()
+    instance.dispatchEvent = jest.fn()
 
     expect(instance.isPristine).toBe(true)
     expect(instance.validating).toEqual([])
@@ -51,6 +52,9 @@ describe('StrapForm', () => {
       warnings,
     })
 
+    expect(instance.dispatchEvent.mock.calls.length).toBe(1)
+    expect(instance.dispatchEvent.mock.calls[0][0]).toBe('onFormUpdate')
+
     expect(instance.isPristine).toBe(isPristine)
     expect(instance.validating).toEqual([])
     expect(instance.errors).toEqual({ testInput: errors })
@@ -62,7 +66,7 @@ describe('StrapForm', () => {
     expect(mocks[mockName].mock.calls.length).toBe(1)
     expect(mocks[offMock].mock.calls.length).toBe(0)
 
-    expect(mocks[mockName].mock.calls[0][0]).toEqual({
+    const expectedFormData = {
       errors: { testInput: errors },
       warnings: { testInput: warnings },
       inputName: 'testInput',
@@ -71,7 +75,10 @@ describe('StrapForm', () => {
       isPristine,
       isSubmitting: false,
       isValidating: false,
-    })
+    }
+
+    expect(mocks[mockName].mock.calls[0][0]).toEqual(expectedFormData)
+    expect(instance.dispatchEvent.mock.calls[0][1]).toEqual(expectedFormData)
   }
 
   it('handle inputBlur event correctly with errors', () => {
