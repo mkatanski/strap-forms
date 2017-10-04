@@ -20,7 +20,7 @@ What distinguishes Strap Forms from other similar packages is the simplicity of 
 
 ## Documentation
 
-- Basic Usage Guide
+- [Basic Usage Guide](https://github.com/mkatanski/strap-forms/wiki/Basic-Usage-Guide)
 - Higher Order Components
 - Events System
 
