@@ -8,13 +8,17 @@ export const StrapFormContextTypes = {
   dispatchEvent: T.func,
 }
 
+export const StrapFormPropTypes = {
+  onInputBlur: T.func,
+  onInputChange: T.func,
+  onSubmit: T.func,
+}
+
 export default function (Form) {
   class StrapForm extends Component {
     static propTypes = {
+      ...StrapFormPropTypes,
       children: T.any,
-      onInputBlur: T.func,
-      onInputChange: T.func,
-      onSubmit: T.func,
     }
 
     static defaultProps = {
@@ -58,7 +62,7 @@ export default function (Form) {
     dispatchEvent = (eventName, eventData) => {
       const listenersResults = []
 
-      if (isArray(this.listeners[eventName])) {
+      if (!isArray(this.listeners[eventName])) {
         return undefined
       }
 
@@ -73,7 +77,7 @@ export default function (Form) {
     }
 
     listenTo = (eventName, func) => {
-      if (isArray(this.listeners[eventName])) {
+      if (!isArray(this.listeners[eventName])) {
         this.listeners[eventName] = []
       }
 
@@ -89,62 +93,76 @@ export default function (Form) {
       this.validating.splice(i, 1)
     }
 
-    handleOnInputBlur = ({ value, inputName, errors, warnings }) => {
-      this.isPristine = false
-      this.errors[inputName] = errors
-      this.warnings[inputName] = warnings
+    updateForm = (inputsData) => {
+      if (isArray(inputsData) && inputsData.length !== 0) {
+        inputsData.forEach((data) => {
+          try {
+            const { value, inputName, errors, warnings } = data
+            this.errors[inputName] = errors
+            this.warnings[inputName] = warnings
+            this.values[inputName] = value
+          } catch (e) {
+            // handle error
+          }
+        })
+      }
 
-      this.values[inputName] = value
-
-      this.props.onInputBlur({
+      const formData = {
         errors: this.errors,
         warnings: this.warnings,
-        inputName,
-        value,
         isValid: isValid(this.errors),
         isPristine: this.isPristine,
         isSubmitting: this.isSubmitting,
         isValidating: this.validating.length !== 0,
-      })
+      }
+
+      this.dispatchEvent('onFormUpdate', formData)
+
+      return formData
     }
 
-    handleOnInputChange = ({ value, inputName, errors, warnings }) => {
-      this.errors[inputName] = errors
-      this.warnings[inputName] = warnings
+    handleOnInputBlur = (inputOptions) => {
+      this.isPristine = false
+      const formData = {
+        ...this.updateForm([inputOptions]),
+        inputName: inputOptions.inputName,
+        value: inputOptions.value,
+      }
+      this.props.onInputBlur(formData)
+    }
 
-      this.values[inputName] = value
-
-      this.props.onInputChange({
-        errors: this.errors,
-        warnings: this.warnings,
-        inputName,
-        value,
-        isValid: isValid(this.errors),
-        isPristine: this.isPristine,
-        isSubmitting: this.isSubmitting,
-        isValidating: this.validating.length !== 0,
-      })
+    handleOnInputChange = (inputOptions) => {
+      const formData = {
+        ...this.updateForm([inputOptions]),
+        inputName: inputOptions.inputName,
+        value: inputOptions.value,
+      }
+      this.props.onInputChange(formData)
     }
 
     handleSubmit = async (event) => {
       event.preventDefault()
       this.isSubmitting = true
       this.submitted = true
-      const validationMethods = this.dispatchEvent('onFormSubmit', {})
-      const res = await Promise.all(validationMethods)
+      this.updateForm()
 
-      // if any of validation result is
-      // false, break form submitting
-      if (res.includes(false)) {
-        return
+      const validationMethods = this.dispatchEvent('onFormSubmit', {})
+      let res = []
+      if (validationMethods) {
+        res = await Promise.all(validationMethods)
       }
 
-      await this.props.onSubmit({
-        isPristine: this.isPristine,
-        values: this.values,
-      })
+      this.updateForm(res)
+
+      if (isValid(this.errors)) {
+        await this.props.onSubmit({
+          isPristine: this.isPristine,
+          values: this.values,
+        })
+      }
 
       this.isSubmitting = false
+      this.updateForm()
     }
 
     render() {

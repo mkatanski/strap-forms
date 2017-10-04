@@ -22,8 +22,8 @@
   "scripts": {
     "check": "npm run lint && npm run test",
     "lint": "eslint {components,internal}/**",
-    "test": "jest '/(__tests__|components|lib|internal)/' && npm run test-ssr",
-    "test-watch": "jest '/(__tests__|components|lib|internal)/' --watch",
+    "test": "jest '/(__tests__|components|lib|internal)/' --verbose --coverage && npm run test-ssr",
+    "test-watch": "jest '/(__tests__|components|lib|internal)/' --watch --verbose",
     "test-ssr": "npm run build && node server-side-rendering-tests/*.js",
     "prepublish": "npm run build",
     "build": "node scripts/build.js",
@@ -45,17 +45,15 @@
     }
   ],
   "peerDependencies": {
-    "react": "^15.3.2",
-    "react-dom": "^15.3.2"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-addons-transition-group": "^15.6.2",
+    "bootstrap": "^4.0.0-alpha.6",
+    "reactstrap": "^4.8.0"
   },
   "dependencies": {
-    "classnames": "2.2.5",
-    "fbjs": "^0.9.0-alpha.2",
-    "flatpickr": "^3.0.7",
-    "lodash.debounce": "^4.0.8",
-    "react-addons-css-transition-group": "^15.4.2",
-    "warning": "3.0.0",
-    "window-or-global": "^1.0.1"
+    "fbjs": "^0.9.0-alpha.2"
   },
   "devDependencies": {
     "@storybook/addon-centered": "3.2.10",
@@ -71,11 +69,14 @@
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.24.1",
+    "bootstrap": "^4.0.0-alpha.6",
     "bowser": "^1.6.1",
     "commitizen": "^2.9.5",
     "css-loader": "^0.28.4",
     "cz-conventional-changelog-components": "^1.0.0",
     "enzyme": "^3.0.0",
+    "enzyme-adapter-react-15": "^1.0.0",
+    "enzyme-adapter-react-16": "^1.0.0",
     "eslint": "^4.7.2",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0",
@@ -92,24 +93,25 @@
     "prettier": "^1.2.2",
     "prop-types": "^15.5.8",
     "react": "^16.0.0",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-addons-transition-group": "^15.6.2",
     "react-dom": "^16.0.0",
     "react-test-renderer": "^16.0.0",
+    "reactstrap": "^4.8.0",
     "requestanimationframe": "^0.0.23",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.5",
     "semantic-release": "^8.0.3",
     "shelljs": "^0.7.5",
     "storybook-addon-a11y": "^3.0.0",
-    "validate-commit-msg": "^2.10.1"
+    "validate-commit-msg": "^2.10.1",
+    "winston": "^2.3.1"
   },
   "jest": {
     "coverageDirectory": "./coverage",
     "moduleNameMapper": {
       "^.+\\.(scss)$": "<rootDir>/lib/styleMock.js"
-    },
-    "setupFiles": [
-      "<rootDir>/setup-jest.js"
-    ]
+    }
   },
   "lint-staged": {
     "*.js": [

@@ -2,13 +2,13 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 
 import Section from '../storybook-components/Section'
-import Playground from '../storybook-components/Playground'
+import MyForm from '../storybook-components/basic-usage-guide/custom/MyForm'
 
-storiesOf('Higer Order Components', module)
-  .add('StrapInput', () => (
+storiesOf('Basic Usage Guide', module)
+  .add('Creating simple form using custom components', () => (
     <Section
-      storyTitle="StrapInput"
+      storyTitle="Creating simple form using custom components"
     >
-      <Playground />
+      <MyForm />
     </Section>
   ))

@@ -18,3 +18,5 @@ a11y/results
 
 # we yarn folks here
 package-lock.json
+
+coverage

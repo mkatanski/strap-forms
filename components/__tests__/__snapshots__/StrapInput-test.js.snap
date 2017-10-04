@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StrapInput can be rendered without problems as disabled and readonly 1`] = `
+<div>
+  <div>
+    <input
+      className={undefined}
+      disabled={true}
+      id="test_input_name"
+      name="test_input_name"
+      onBlur={[Function]}
+      onChange={[Function]}
+      readOnly={true}
+      value=""
+    />
+    <span>
+      {"input":{"disabled":true,"id":"test_input_name","name":"test_input_name","readOnly":true,"value":""},"hasErrors":false,"hasWarnings":false,"errors":{},"warnings":{},"touched":false,"isValidating":false,"children":null}
+    </span>
+  </div>
+</div>
+`;
+
+exports[`StrapInput can be rendered without problems with default values 1`] = `
+<div>
+  <div>
+    <input
+      className={undefined}
+      disabled={false}
+      id="test_input_name"
+      name="test_input_name"
+      onBlur={[Function]}
+      onChange={[Function]}
+      readOnly={false}
+      value=""
+    />
+    <span>
+      {"input":{"disabled":false,"id":"test_input_name","name":"test_input_name","readOnly":false,"value":""},"hasErrors":false,"hasWarnings":false,"errors":{},"warnings":{},"touched":false,"isValidating":false,"children":null}
+    </span>
+  </div>
+</div>
+`;
+
+exports[`StrapInput can be rendered without problems with initial value 1`] = `
+<div>
+  <div>
+    <input
+      className="customProperty"
+      disabled={false}
+      id="test_input_name"
+      name="test_input_name"
+      onBlur={[Function]}
+      onChange={[Function]}
+      readOnly={false}
+      value="init value"
+    />
+    <span>
+      {"className":"customProperty","input":{"disabled":false,"id":"test_input_name","name":"test_input_name","readOnly":false,"value":"init value"},"hasErrors":false,"hasWarnings":false,"errors":{},"warnings":{},"touched":false,"isValidating":false,"children":null}
+    </span>
+  </div>
+</div>
+`;

@@ -78,13 +78,14 @@ export default function (Input) {
     }
 
     performAsyncValidation = async (value) => {
-      this.dispatchEvent('onBeforeAsyncValidation', { value })
       const asyncValidateMethod = this.props.asyncValidation
       let message
 
       if (!asyncValidateMethod || this.props.disabled || this.props.readOnly) {
-        return
+        return message
       }
+
+      this.dispatchEvent('onBeforeAsyncValidation', { value })
 
       try {
         await asyncValidateMethod(value, this.state.values)
@@ -105,7 +106,7 @@ export default function (Input) {
       const { errors, warnings } = this.state
 
       if (this.props.disabled || this.props.readOnly) {
-        return
+        return { errors, warnings }
       }
 
       this.validate({
@@ -195,7 +196,11 @@ export default function (Input) {
     handleOnFormSubmit = async () => {
       const validationResult = await this.performFullValidation(this.state.value)
       this.setState({ ...validationResult, touched: true })
-      return this.isValid(validationResult.errors)
+      return {
+        inputName: this.props.name,
+        ...validationResult,
+        value: this.state.value,
+      }
     }
 
     render() {
@@ -214,12 +219,21 @@ export default function (Input) {
         hasWarnings: warnings && !this.isValid(warnings),
         errors,
         warnings,
-        touched: this.state.touched || this.context.isSubmitting,
+        touched: this.state.touched,
         isValidating: this.state.isValidating,
       }
 
+      const externalProps = {}
+      const propTypesKeys = Object.keys(this.constructor.propTypes)
+      Object.keys(this.props).forEach((key) => {
+        if (propTypesKeys.includes(key)) {
+          return
+        }
+        externalProps[key] = this.props[key]
+      })
+
       return (
-        <Input {...props}>
+        <Input {...externalProps} {...props}>
           {this.props.children}
         </Input>
       )

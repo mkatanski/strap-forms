@@ -1,3 +1,7 @@
 export StrapForm from './components/StrapForm'
+export { StrapFormContextTypes } from './components/StrapForm'
+export { StrapFormPropTypes } from './components/StrapForm'
 export StrapInput from './components/StrapInput'
+export { StrapInputPropTypes } from './components/StrapInput'
 export StrapGroup from './components/StrapGroup'
+export { StrapGroupPropTypes } from './components/StrapGroup'
