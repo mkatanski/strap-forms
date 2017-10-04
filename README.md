@@ -14,7 +14,7 @@ Lightweight, expandable, simple and fast to implement forms for React.js.
 
 Strap Forms makes it easy to create and manage forms in React.js.
 
-What distinguishes Strap Forms from other similar packages is the simplicity of adding validation, including asynchronous, that can be performed independently on each input or at the same time when an attempt is made to send a form. Strap Forms allows you to quickly and easily create your own, optimized components, or use ready-made components based on "react-bootstrap" or "reactstrap". Yes, you do not have to write your own components, you can use the ready database to write applications even faster.
+What distinguishes Strap Forms from other similar packages is the simplicity of adding validation, including asynchronous, that can be performed independently on each input or at the same time when an attempt is made to send a form. Strap Forms allows you to quickly and easily create your own, optimized components.
 
 **StrapForms does not force the use of redux.**
 
@@ -23,7 +23,6 @@ What distinguishes Strap Forms from other similar packages is the simplicity of 
 - Basic Usage Guide
 - Higher Order Components
 - Events System
-- Bootstrap Components
 
 ## Live Playground
 

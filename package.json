@@ -45,17 +45,15 @@
     }
   ],
   "peerDependencies": {
-    "react": "^15.3.2",
-    "react-dom": "^15.3.2"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-addons-transition-group": "^15.6.2",
+    "bootstrap": "^4.0.0-alpha.6",
+    "reactstrap": "^4.8.0"
   },
   "dependencies": {
-    "classnames": "2.2.5",
-    "fbjs": "^0.9.0-alpha.2",
-    "flatpickr": "^3.0.7",
-    "lodash.debounce": "^4.0.8",
-    "react-addons-css-transition-group": "^15.4.2",
-    "warning": "3.0.0",
-    "window-or-global": "^1.0.1"
+    "fbjs": "^0.9.0-alpha.2"
   },
   "devDependencies": {
     "@storybook/addon-centered": "3.2.10",
@@ -71,6 +69,7 @@
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.24.1",
+    "bootstrap": "^4.0.0-alpha.6",
     "bowser": "^1.6.1",
     "commitizen": "^2.9.5",
     "css-loader": "^0.28.4",
@@ -94,8 +93,11 @@
     "prettier": "^1.2.2",
     "prop-types": "^15.5.8",
     "react": "^16.0.0",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-addons-transition-group": "^15.6.2",
     "react-dom": "^16.0.0",
     "react-test-renderer": "^16.0.0",
+    "reactstrap": "^4.8.0",
     "requestanimationframe": "^0.0.23",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.5",
