@@ -18,6 +18,12 @@ What distinguishes Strap Forms from other similar packages is the simplicity of 
 
 **StrapForms does not force the use of redux.**
 
+## Installation
+
+```bash
+npm install --save strap-forms
+```
+
 ## Documentation
 
 - [Basic Usage Guide](https://github.com/mkatanski/strap-forms/wiki/Basic-Usage-Guide)
