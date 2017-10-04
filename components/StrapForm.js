@@ -146,10 +146,16 @@ export default function (Form) {
       this.submitted = true
       this.updateForm()
 
-      const validationMethods = this.dispatchEvent('onFormSubmit', {})
+      const onSubmitHandlers = this.dispatchEvent('onFormSubmit', {
+        isPristine: this.isPristine,
+        errors: this.errors,
+        warnings: this.warnings,
+        values: this.values,
+      })
+
       let res = []
-      if (validationMethods) {
-        res = await Promise.all(validationMethods)
+      if (onSubmitHandlers) {
+        res = await Promise.all(onSubmitHandlers)
       }
 
       this.updateForm(res)
