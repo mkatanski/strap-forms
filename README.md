@@ -18,6 +18,9 @@ What distinguishes Strap Forms from other similar packages is the simplicity of 
 
 **StrapForms does not force the use of redux.**
 
+### :bangbang: Important Notice :bangbang:
+> This module is still under heavy development. Please be aware that many things may be changed during upcoming releases.
+
 ## Installation
 
 ```bash
@@ -28,7 +31,7 @@ npm install --save strap-forms
 
 - [Basic Usage Guide](https://github.com/mkatanski/strap-forms/wiki/Basic-Usage-Guide)
 - Higher Order Components
-- Events System
+- [Context Events](https://github.com/mkatanski/strap-forms/wiki/Context-Events)
 
 ## Live Playground
 
