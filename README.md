@@ -3,10 +3,9 @@
 Lightweight, expandable, simple and fast to implement forms for React.js.
 
 [![Build Status][travis-svg]][travis-url]
+[![codecov](https://codecov.io/gh/mkatanski/strap-forms/branch/master/graph/badge.svg)](https://codecov.io/gh/mkatanski/strap-forms)
 [![dependency status][deps-svg]][deps-url]
-[![dev dependency status][dev-deps-svg]][dev-deps-url]
 [![License][license-image]][license-url]
-
 
 ![Logo](https://github.com/mkatanski/strap-forms/blob/master/logo.png)
 
