@@ -155,7 +155,20 @@ describe('StrapForm', () => {
     expect(instance.dispatchEvent.mock.calls[1][0]).toBe('onFormSubmit')
     expect(instance.dispatchEvent.mock.calls[2][0]).toBe('onFormUpdate')
     expect(instance.dispatchEvent.mock.calls[3][0]).toBe('onFormUpdate')
-    expect(instance.dispatchEvent.mock.calls[1][1]).toEqual({})
+    expect(instance.dispatchEvent.mock.calls[1][1]).toEqual({
+      errors: {
+        test_input: {
+          0: 'some error',
+        },
+      },
+      isPristine: true,
+      values: {
+        test_input: 'invalid_value',
+      },
+      warnings: {
+        test_input: { 0: 'some warning' },
+      },
+    })
     expect(onSubmitMock.mock.calls.length).toBe(0)
     expect(instance.submitted).toBe(true)
     expect(instance.isSubmitting).toBe(false)
@@ -186,7 +199,18 @@ describe('StrapForm', () => {
     expect(instance.dispatchEvent.mock.calls[1][0]).toBe('onFormSubmit')
     expect(instance.dispatchEvent.mock.calls[2][0]).toBe('onFormUpdate')
     expect(instance.dispatchEvent.mock.calls[3][0]).toBe('onFormUpdate')
-    expect(instance.dispatchEvent.mock.calls[1][1]).toEqual({})
+    expect(instance.dispatchEvent.mock.calls[1][1]).toEqual({
+      errors: {
+        test_input: {},
+      },
+      isPristine: true,
+      values: {
+        test_input: 'invalid_value',
+      },
+      warnings: {
+        test_input: { 0: 'some warning' },
+      },
+    })
     expect(onSubmitMock.mock.calls.length).toBe(1)
     expect(onSubmitMock.mock.calls[0][0]).toEqual({
       isPristine: true,
