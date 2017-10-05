@@ -28,7 +28,7 @@ npm install --save strap-forms
 
 - [Basic Usage Guide](https://github.com/mkatanski/strap-forms/wiki/Basic-Usage-Guide)
 - Higher Order Components
-- Events System
+- [Context Events](https://github.com/mkatanski/strap-forms/wiki/Context-Events)
 
 ## Live Playground
 
