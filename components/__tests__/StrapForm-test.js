@@ -75,6 +75,9 @@ describe('StrapForm', () => {
       isPristine,
       isSubmitting: false,
       isValidating: false,
+      values: {
+        testInput: 'test_value',
+      },
     }
 
     expect(mocks[mockName].mock.calls[0][0]).toEqual(expectedFormData)
@@ -85,6 +88,9 @@ describe('StrapForm', () => {
       isPristine,
       isSubmitting: false,
       isValidating: false,
+      values: {
+        testInput: 'test_value',
+      },
     })
   }
 
@@ -213,8 +219,13 @@ describe('StrapForm', () => {
     })
     expect(onSubmitMock.mock.calls.length).toBe(1)
     expect(onSubmitMock.mock.calls[0][0]).toEqual({
+      errors: { test_input: {} },
       isPristine: true,
+      isSubmitting: true,
+      isValid: true,
+      isValidating: false,
       values: { test_input: 'invalid_value' },
+      warnings: { test_input: { 0: 'some warning' } },
     })
     expect(instance.submitted).toBe(true)
     expect(instance.isSubmitting).toBe(false)

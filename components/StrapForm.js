@@ -59,6 +59,18 @@ export default function (Form) {
       this.listenTo('onAfterAsyncValidation', this.handleOnAfterAsyncValidation)
     }
 
+    get formData() {
+      return {
+        errors: this.errors,
+        warnings: this.warnings,
+        isValid: isValid(this.errors),
+        isPristine: this.isPristine,
+        isSubmitting: this.isSubmitting,
+        isValidating: this.validating.length !== 0,
+        values: this.values,
+      }
+    }
+
     dispatchEvent = (eventName, eventData) => {
       const listenersResults = []
 
@@ -107,24 +119,14 @@ export default function (Form) {
         })
       }
 
-      const formData = {
-        errors: this.errors,
-        warnings: this.warnings,
-        isValid: isValid(this.errors),
-        isPristine: this.isPristine,
-        isSubmitting: this.isSubmitting,
-        isValidating: this.validating.length !== 0,
-      }
-
-      this.dispatchEvent('onFormUpdate', formData)
-
-      return formData
+      this.dispatchEvent('onFormUpdate', this.formData)
     }
 
     handleOnInputBlur = (inputOptions) => {
       this.isPristine = false
+      this.updateForm([inputOptions])
       const formData = {
-        ...this.updateForm([inputOptions]),
+        ...this.formData,
         inputName: inputOptions.inputName,
         value: inputOptions.value,
       }
@@ -132,8 +134,9 @@ export default function (Form) {
     }
 
     handleOnInputChange = (inputOptions) => {
+      this.updateForm([inputOptions])
       const formData = {
-        ...this.updateForm([inputOptions]),
+        ...this.formData,
         inputName: inputOptions.inputName,
         value: inputOptions.value,
       }
@@ -161,10 +164,7 @@ export default function (Form) {
       this.updateForm(res)
 
       if (isValid(this.errors)) {
-        await this.props.onSubmit({
-          isPristine: this.isPristine,
-          values: this.values,
-        })
+        await this.props.onSubmit(this.formData)
       }
 
       this.isSubmitting = false
