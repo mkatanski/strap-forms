@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import invariant from 'fbjs/lib/invariant'
 import T from 'prop-types'
 
 import { StrapFormContextTypes } from './StrapForm'
@@ -13,10 +12,18 @@ export const StrapGroupPropTypes = {
   isPristine: T.bool,
 }
 
+export const StrapGroupContextTypes = {
+  registerToGroup: T.func,
+  deregisterFromGroup: T.func,
+}
+
 export default function (Group) {
   class StrapGroup extends Component {
     static contextTypes = {
       ...StrapFormContextTypes,
+    }
+    static childContextTypes = {
+      ...StrapGroupContextTypes,
     }
 
     static propTypes = {
@@ -31,35 +38,86 @@ export default function (Group) {
 
       this.inputNames = []
       this.isPristine = true
+      this.touched = false
     }
 
     state = {
       errors: {},
       warnings: {},
+      values: {},
+    }
+
+    getChildContext() {
+      return {
+        registerToGroup: this.handleRegisterToGroup,
+        deregisterFromGroup: this.handleDeregisterFromGroup,
+      }
     }
 
     componentWillMount() {
-      React.Children.map(this.props.children, (child) => {
-        invariant(
-          child.type.name === 'StrapInput',
-          'The group can only contain "StrapInput" components as its children'
-        )
-
-        this.inputNames.push(child.props.name)
-      })
-
       this.context.listenTo('onInputChange', this.handleOnInputChange)
       this.context.listenTo('onInputBlur', this.handleOnInputBlur)
+      this.context.listenTo('onFormUpdate', this.handleOnFormUpdate)
     }
 
     setValidationResult = (e) => {
-      const { errors, warnings } = this.state
+      const { errors, warnings, values } = this.state
       errors[e.inputName] = e.errors
       warnings[e.inputName] = e.warnings
+      values[e.inputName] = e.value
 
       this.setState({
         errors,
         warnings,
+        values,
+      })
+    }
+
+    filterData = (list) => {
+      const data = {}
+      Object.keys(list).forEach((key) => {
+        if (!this.inputNames.includes(key)) {
+          return
+        }
+        data[key] = list[key]
+      })
+      return data
+    }
+
+    handleRegisterToGroup = (inputName) => {
+      if (this.inputNames.includes(inputName)) {
+        return false
+      }
+
+      this.inputNames.push(inputName)
+
+      return true
+    }
+
+    handleDeregisterFromGroup = (inputName) => {
+      const i = this.inputNames.indexOf(inputName)
+
+      if (i === -1) {
+        return false
+      }
+
+      this.inputNames.splice(i, 1)
+
+      return true
+    }
+
+    handleOnFormUpdate = ({ values, errors, warnings, isSubmitting }) => {
+      if (!isSubmitting) {
+        return
+      }
+
+      const groupErrors = this.filterData(errors)
+
+      this.touched = true
+      this.setState({
+        errors: groupErrors,
+        warnings: this.filterData(warnings),
+        values: this.filterData(values),
       })
     }
 
@@ -68,6 +126,7 @@ export default function (Group) {
         return
       }
 
+      this.isPristine = false
       this.setValidationResult(e)
     }
 
@@ -76,19 +135,20 @@ export default function (Group) {
         return
       }
 
-      this.isPristine = false
-
+      this.touched = true
       this.setValidationResult(e)
     }
 
     render() {
-      const { errors, warnings } = this.state
+      const { errors, warnings, values } = this.state
       const props = {
         hasErrors: errors && !isValid(errors),
         hasWarnings: warnings && !isValid(warnings),
         errors,
         warnings,
+        values,
         isPristine: this.isPristine,
+        touched: this.touched,
       }
 
       return (

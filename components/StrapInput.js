@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import T from 'prop-types'
 
 import { StrapFormContextTypes } from './StrapForm'
+import { StrapGroupContextTypes } from './StrapGroup'
 
 export const StrapInputPropTypes = {
   input: T.shape({
@@ -25,6 +26,7 @@ export default function (Input) {
   class StrapInput extends Component {
     static contextTypes = {
       ...StrapFormContextTypes,
+      ...StrapGroupContextTypes,
     }
 
     static propTypes = {
@@ -64,6 +66,15 @@ export default function (Input) {
 
     componentWillMount() {
       this.context.listenTo('onFormSubmit', this.handleOnFormSubmit)
+      if (this.context.registerToGroup) {
+        this.context.registerToGroup(this.props.name)
+      }
+    }
+
+    componentWillUnmount() {
+      if (this.context.deregisterFromGroup) {
+        this.context.deregisterFromGroup(this.props.name)
+      }
     }
 
     isValid = errors => Object.keys(errors).length === 0

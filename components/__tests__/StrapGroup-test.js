@@ -42,7 +42,8 @@ describe('StrapGroup', () => {
 
     expect(component.state('errors')).toEqual({ testInput: 'some errors' })
     expect(component.state('warnings')).toEqual({ testInput: 'some warnings' })
-    expect(instance.isPristine).toBe(true)
+    expect(instance.isPristine).toBe(false)
+    expect(instance.touched).toBe(false)
 
     done()
   })
@@ -106,7 +107,8 @@ describe('StrapGroup', () => {
 
     expect(component.state('errors')).toEqual({ testInput: 'some errors' })
     expect(component.state('warnings')).toEqual({ testInput: 'some warnings' })
-    expect(instance.isPristine).toBe(false)
+    expect(instance.isPristine).toBe(true)
+    expect(instance.touched).toBe(true)
 
     done()
   })
