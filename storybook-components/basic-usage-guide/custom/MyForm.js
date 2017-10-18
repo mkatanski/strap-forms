@@ -22,7 +22,7 @@ class MyForm extends React.Component {
     })
 
     return (
-      <Form handleSubmit={this.handleSubmit}>
+      <Form onSubmit={this.handleSubmit}>
         <p>Type john.doe@example.com to see async validation error</p>
         <div>
           <Input

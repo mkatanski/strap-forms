@@ -24,7 +24,7 @@ class MyForm extends React.Component {
     })
 
     return (
-      <Form handleSubmit={this.handleSubmit}>
+      <Form onSubmit={this.handleSubmit}>
         <Group>
           <Label htmlFor="email">
             First e-mail
