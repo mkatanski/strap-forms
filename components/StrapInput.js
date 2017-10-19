@@ -121,13 +121,21 @@ export default function (Input) {
     }
 
     performSyncValidation = (value) => {
-      const errorValidators = this.props.validate
-      const warnValidators = this.props.warn
+      const errorValidators = [...this.props.validate]
+      const warnValidators = [...this.props.warn]
       const { errors, warnings } = this.state
 
       if (this.props.disabled || this.props.readOnly) {
         return { errors, warnings }
       }
+
+      this.dispatchEvent('onBeforeSyncValidation', {
+        errors: [...errors],
+        warnings: [...warnings],
+        value,
+        errorValidators,
+        warnValidators,
+      })
 
       this.validate({
         validators: errorValidators,

@@ -1,16 +1,38 @@
 import React, { Component } from 'react'
 import T from 'prop-types'
-import { StrapInput, StrapInputPropTypes } from '../../../index'
+import { StrapInput, StrapInputPropTypes, StrapFormContextTypes } from '../../../index'
 import { Input, InputGroup, InputGroupAddon, FormText } from 'reactstrap'
 
 class InputPure extends Component {
   static propTypes = {
     ...StrapInputPropTypes,
     helpText: T.string,
+    required: T.bool,
   }
 
   static defaultProps = {
     helpText: '',
+    required: false,
+  }
+
+  static contextTypes = {
+    ...StrapFormContextTypes,
+  }
+
+  componentWillMount() {
+    // Add internal validation to the component by listening for
+    // onBeforeSyncValidation event and pushing new validation methods
+    // to the existing lists of validators
+    this.context.listenTo('onBeforeSyncValidation', ({ inputName, errorValidators }) => {
+      // Make sure event has been dispatched for current component
+      // and required property is set to true
+      if (inputName !== this.props.input.name || !this.props.required) {
+        return
+      }
+
+      // Use unshift to make sure that this validation will be checked first
+      errorValidators.unshift(value => (value ? undefined : 'This field is required'))
+    })
   }
 
   get color() {

@@ -87,23 +87,24 @@ describe('StrapInput', () => {
     await instance[method](val)
 
     if (expected.asyncMessage) {
-      expect(mockDispatchEvent.mock.calls.length).toBe(4)
-      expect(mockDispatchEvent.mock.calls[0][0]).toBe('onAfterSyncValidation')
-      expect(mockDispatchEvent.mock.calls[1][0]).toBe('onBeforeAsyncValidation')
-      expect(mockDispatchEvent.mock.calls[1][1]).toEqual({
+      expect(mockDispatchEvent.mock.calls.length).toBe(5)
+      expect(mockDispatchEvent.mock.calls[0][0]).toBe('onBeforeSyncValidation')
+      expect(mockDispatchEvent.mock.calls[1][0]).toBe('onAfterSyncValidation')
+      expect(mockDispatchEvent.mock.calls[2][0]).toBe('onBeforeAsyncValidation')
+      expect(mockDispatchEvent.mock.calls[2][1]).toEqual({
         inputName: 'test_input_name',
         value: val,
         asyncQueue: [val],
       })
-      expect(mockDispatchEvent.mock.calls[2][0]).toBe('onAfterAsyncValidation')
-      expect(mockDispatchEvent.mock.calls[2][1]).toEqual({
+      expect(mockDispatchEvent.mock.calls[3][0]).toBe('onAfterAsyncValidation')
+      expect(mockDispatchEvent.mock.calls[3][1]).toEqual({
         inputName: 'test_input_name',
         message: expected.asyncMessage,
         asyncQueue: [],
       })
 
-      expect(mockDispatchEvent.mock.calls[3][0]).toBe(expected.eventName)
-      expect(mockDispatchEvent.mock.calls[3][1]).toEqual({
+      expect(mockDispatchEvent.mock.calls[4][0]).toBe(expected.eventName)
+      expect(mockDispatchEvent.mock.calls[4][1]).toEqual({
         errors: expected.errors,
         inputName: 'test_input_name',
         isValid: expected.isValid,
@@ -111,11 +112,12 @@ describe('StrapInput', () => {
         warnings: expected.warnings,
       })
     } else {
-      const calls = disabled || readOnly ? 1 : 2
+      const calls = disabled || readOnly ? 1 : 3
 
       expect(mockDispatchEvent.mock.calls.length).toBe(calls)
       if (!disabled && !readOnly) {
-        expect(mockDispatchEvent.mock.calls[0][0]).toBe('onAfterSyncValidation')
+        expect(mockDispatchEvent.mock.calls[0][0]).toBe('onBeforeSyncValidation')
+        expect(mockDispatchEvent.mock.calls[1][0]).toBe('onAfterSyncValidation')
       }
       expect(mockDispatchEvent.mock.calls[calls - 1][0]).toBe(expected.eventName)
       expect(mockDispatchEvent.mock.calls[calls - 1][1]).toEqual({
