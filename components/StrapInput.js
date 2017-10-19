@@ -53,7 +53,7 @@ export default function (Input) {
     constructor(...args) {
       super(...args)
 
-      this.isValidating = false
+      this.asyncQueue = []
     }
 
     state = {
@@ -96,7 +96,12 @@ export default function (Input) {
         return message
       }
 
-      this.dispatchEvent('onBeforeAsyncValidation', { value })
+      this.asyncQueue.push(value)
+
+      this.dispatchEvent('onBeforeAsyncValidation', {
+        value,
+        asyncQueue: [...this.asyncQueue],
+      })
 
       try {
         await asyncValidateMethod(value, this.state.values)
@@ -104,8 +109,12 @@ export default function (Input) {
         message = error.message
       }
 
+      const queueIndex = this.asyncQueue.indexOf(value)
+      this.asyncQueue.splice(queueIndex, 1)
+
       this.dispatchEvent('onAfterAsyncValidation', {
         message,
+        asyncQueue: [...this.asyncQueue],
       })
 
       return message
@@ -199,6 +208,9 @@ export default function (Input) {
 
     handleOnBlur = async (e) => {
       const value = e.target ? e.target.value : e
+
+      this.setState({ touched: true, value })
+
       const validationResult = await this.performFullValidation(value)
 
       this.dispatchEvent('onInputBlur', {
@@ -207,7 +219,7 @@ export default function (Input) {
         ...validationResult,
       })
 
-      this.setState({ ...validationResult, touched: true, value })
+      this.setState({ ...validationResult })
     }
 
     handleOnFormSubmit = async () => {
@@ -237,7 +249,7 @@ export default function (Input) {
         errors,
         warnings,
         touched: this.state.touched,
-        isValidating: this.state.isValidating,
+        isValidating: this.asyncQueue.length > 0,
       }
 
       const externalProps = {}

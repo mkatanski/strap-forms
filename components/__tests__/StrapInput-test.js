@@ -93,11 +93,13 @@ describe('StrapInput', () => {
       expect(mockDispatchEvent.mock.calls[1][1]).toEqual({
         inputName: 'test_input_name',
         value: val,
+        asyncQueue: [val],
       })
       expect(mockDispatchEvent.mock.calls[2][0]).toBe('onAfterAsyncValidation')
       expect(mockDispatchEvent.mock.calls[2][1]).toEqual({
         inputName: 'test_input_name',
         message: expected.asyncMessage,
+        asyncQueue: [],
       })
 
       expect(mockDispatchEvent.mock.calls[3][0]).toBe(expected.eventName)
