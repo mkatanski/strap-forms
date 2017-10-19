@@ -58,6 +58,7 @@ export default function (Group) {
       this.context.listenTo('onInputChange', this.handleOnInputChange)
       this.context.listenTo('onInputBlur', this.handleOnInputBlur)
       this.context.listenTo('onFormUpdate', this.handleOnFormUpdate)
+      this.context.listenTo('onAfterSyncValidation', this.handleOnAfterSyncValidation)
     }
 
     setValidationResult = (e) => {
@@ -112,13 +113,21 @@ export default function (Group) {
       }
 
       const groupErrors = this.filterData(errors)
-
       this.touched = true
+
       this.setState({
         errors: groupErrors,
         warnings: this.filterData(warnings),
         values: this.filterData(values),
       })
+    }
+
+    handleOnAfterSyncValidation = (e) => {
+      if (!this.inputNames.includes(e.inputName)) {
+        return
+      }
+
+      this.setValidationResult(e)
     }
 
     handleOnInputChange = (e) => {

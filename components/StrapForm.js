@@ -98,6 +98,7 @@ export default function (Form) {
 
     handleOnBeforeAsyncValidation = (e) => {
       this.validating.push(e.inputName)
+      this.dispatchEvent('onFormUpdate', this.formData)
     }
 
     handleOnAfterAsyncValidation = (e) => {

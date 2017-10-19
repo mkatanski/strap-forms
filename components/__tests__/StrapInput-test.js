@@ -87,20 +87,21 @@ describe('StrapInput', () => {
     await instance[method](val)
 
     if (expected.asyncMessage) {
-      expect(mockDispatchEvent.mock.calls.length).toBe(3)
-      expect(mockDispatchEvent.mock.calls[0][0]).toBe('onBeforeAsyncValidation')
-      expect(mockDispatchEvent.mock.calls[0][1]).toEqual({
+      expect(mockDispatchEvent.mock.calls.length).toBe(4)
+      expect(mockDispatchEvent.mock.calls[0][0]).toBe('onAfterSyncValidation')
+      expect(mockDispatchEvent.mock.calls[1][0]).toBe('onBeforeAsyncValidation')
+      expect(mockDispatchEvent.mock.calls[1][1]).toEqual({
         inputName: 'test_input_name',
         value: val,
       })
-      expect(mockDispatchEvent.mock.calls[1][0]).toBe('onAfterAsyncValidation')
-      expect(mockDispatchEvent.mock.calls[1][1]).toEqual({
+      expect(mockDispatchEvent.mock.calls[2][0]).toBe('onAfterAsyncValidation')
+      expect(mockDispatchEvent.mock.calls[2][1]).toEqual({
         inputName: 'test_input_name',
         message: expected.asyncMessage,
       })
 
-      expect(mockDispatchEvent.mock.calls[2][0]).toBe(expected.eventName)
-      expect(mockDispatchEvent.mock.calls[2][1]).toEqual({
+      expect(mockDispatchEvent.mock.calls[3][0]).toBe(expected.eventName)
+      expect(mockDispatchEvent.mock.calls[3][1]).toEqual({
         errors: expected.errors,
         inputName: 'test_input_name',
         isValid: expected.isValid,
@@ -108,9 +109,14 @@ describe('StrapInput', () => {
         warnings: expected.warnings,
       })
     } else {
-      expect(mockDispatchEvent.mock.calls.length).toBe(1)
-      expect(mockDispatchEvent.mock.calls[0][0]).toBe(expected.eventName)
-      expect(mockDispatchEvent.mock.calls[0][1]).toEqual({
+      const calls = disabled || readOnly ? 1 : 2
+
+      expect(mockDispatchEvent.mock.calls.length).toBe(calls)
+      if (!disabled && !readOnly) {
+        expect(mockDispatchEvent.mock.calls[0][0]).toBe('onAfterSyncValidation')
+      }
+      expect(mockDispatchEvent.mock.calls[calls - 1][0]).toBe(expected.eventName)
+      expect(mockDispatchEvent.mock.calls[calls - 1][1]).toEqual({
         errors: expected.errors,
         inputName: 'test_input_name',
         isValid: expected.isValid,

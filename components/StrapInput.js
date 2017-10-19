@@ -132,6 +132,12 @@ export default function (Input) {
         value,
       })
 
+      this.dispatchEvent('onAfterSyncValidation', {
+        errors,
+        warnings,
+        value,
+      })
+
       return { errors, warnings }
     }
 

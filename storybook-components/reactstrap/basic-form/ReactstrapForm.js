@@ -1,10 +1,11 @@
 import React from 'react'
 
-import { Label, Button } from 'reactstrap'
+import { Label } from 'reactstrap'
 
 import Form from '../components/Form'
 import Input from '../components/Input'
 import Group from '../components/Group'
+import Button from '../components/Button'
 
 const apiSimulate = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -50,7 +51,7 @@ class MyForm extends React.Component {
           />
         </Group>
 
-        <Button type="submit">Submit Form</Button>
+        <Button>Submit Form</Button>
       </Form>
     )
   }
