@@ -22,8 +22,8 @@
   "scripts": {
     "check": "npm run lint && npm run test",
     "lint": "eslint {components,internal}/**",
-    "test": "jest '/(__tests__|components|lib|internal)/' --verbose --coverage && npm run test-ssr",
-    "test-report": "jest '/(__tests__|components|lib|internal)/' --verbose --coverage && npm run test-ssr && codecov",
+    "test": "jest '/(__tests__|components|lib|internal)/' --verbose --coverage",
+    "test-report": "jest '/(__tests__|components|lib|internal)/' --verbose --coverage && codecov",
     "test-watch": "jest '/(__tests__|components|lib|internal)/' --watch --verbose",
     "test-ssr": "npm run build && node server-side-rendering-tests/*.js",
     "prepublish": "npm run build",
