@@ -25,20 +25,28 @@ export default function (Button) {
     }
 
     state = {
-      disabled: false,
+      disabled: this.props.disabled,
     }
 
     componentWillMount() {
+      this.context.listenTo('onFormUpdate', this.handleOnFormUpdate)
+    }
+
+    handleOnFormUpdate = ({ isValid, isSubmitting, isPristine, isValidating }) => {
       const { disableOnValidating } = this.props
-      this.context.listenTo('onFormUpdate', ({ isValid, isSubmitting, isPristine, isValidating }) => {
-        if (isPristine && !(isValidating && disableOnValidating)) return
-        this.setState({ disabled: !(isValid && !isSubmitting && !isValidating) })
-      })
+      const disabled = (
+        this.props.disabled ||
+        isSubmitting ||
+        (isValidating && disableOnValidating) ||
+        (!isValid && !isPristine)
+      )
+
+      this.setState({ disabled })
     }
 
     render() {
       const { disabled } = this.state
-      const isDisabled = disabled || this.props.disabled
+      const isDisabled = disabled
 
       return (
         <Button disabled={isDisabled}>
