@@ -1,7 +1,5 @@
 /* eslint-disable react/prefer-stateless-function,react/no-multi-comp */
 import React, { Component } from 'react'
-// import T from 'prop-types'
-import renderer from 'react-test-renderer'
 import { shallow, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 

@@ -54,8 +54,8 @@ class PureInput extends Component {
 const TestInput = StrapInput(PureInput)
 
 describe('StrapInput', () => {
-  const checkChange = async (done, method, options) => {
-    const { val, validate, warn, expected, disabled, readOnly, asyncValidation } = options
+  const getComponent = (options) => {
+    const { validate, warn, disabled, readOnly, asyncValidation } = options
     const mockListenTo = jest.fn()
     const mockDispatchEvent = jest.fn()
 
@@ -78,33 +78,44 @@ describe('StrapInput', () => {
       }
     )
 
-    const instance = component.instance()
+    return {
+      component,
+      instance: component.instance(),
+      mockListenTo,
+      mockDispatchEvent,
+      dispatchCalls: mockDispatchEvent.mock.calls,
+    }
+  }
+
+  const checkChange = async (done, method, options) => {
+    const { val, expected, disabled, readOnly } = options
+    const { component, instance, dispatchCalls } = getComponent(options)
 
     expect(component.state('touched')).toBe(false)
     expect(component.state('value')).toBe('')
-    expect(mockDispatchEvent.mock.calls.length).toBe(0)
+    expect(dispatchCalls.length).toBe(0)
 
     await instance[method](val)
 
     if (expected.asyncMessage) {
-      expect(mockDispatchEvent.mock.calls.length).toBe(5)
-      expect(mockDispatchEvent.mock.calls[0][0]).toBe('onBeforeSyncValidation')
-      expect(mockDispatchEvent.mock.calls[1][0]).toBe('onAfterSyncValidation')
-      expect(mockDispatchEvent.mock.calls[2][0]).toBe('onBeforeAsyncValidation')
-      expect(mockDispatchEvent.mock.calls[2][1]).toEqual({
+      expect(dispatchCalls.length).toBe(5)
+      expect(dispatchCalls[0][0]).toBe('onBeforeSyncValidation')
+      expect(dispatchCalls[1][0]).toBe('onAfterSyncValidation')
+      expect(dispatchCalls[2][0]).toBe('onBeforeAsyncValidation')
+      expect(dispatchCalls[2][1]).toEqual({
         inputName: 'test_input_name',
         value: val,
         asyncQueue: [val],
       })
-      expect(mockDispatchEvent.mock.calls[3][0]).toBe('onAfterAsyncValidation')
-      expect(mockDispatchEvent.mock.calls[3][1]).toEqual({
+      expect(dispatchCalls[3][0]).toBe('onAfterAsyncValidation')
+      expect(dispatchCalls[3][1]).toEqual({
         inputName: 'test_input_name',
         message: expected.asyncMessage,
         asyncQueue: [],
       })
 
-      expect(mockDispatchEvent.mock.calls[4][0]).toBe(expected.eventName)
-      expect(mockDispatchEvent.mock.calls[4][1]).toEqual({
+      expect(dispatchCalls[4][0]).toBe(expected.eventName)
+      expect(dispatchCalls[4][1]).toEqual({
         errors: expected.errors,
         inputName: 'test_input_name',
         isValid: expected.isValid,
@@ -114,13 +125,13 @@ describe('StrapInput', () => {
     } else {
       const calls = disabled || readOnly ? 1 : 3
 
-      expect(mockDispatchEvent.mock.calls.length).toBe(calls)
+      expect(dispatchCalls.length).toBe(calls)
       if (!disabled && !readOnly) {
-        expect(mockDispatchEvent.mock.calls[0][0]).toBe('onBeforeSyncValidation')
-        expect(mockDispatchEvent.mock.calls[1][0]).toBe('onAfterSyncValidation')
+        expect(dispatchCalls[0][0]).toBe('onBeforeSyncValidation')
+        expect(dispatchCalls[1][0]).toBe('onAfterSyncValidation')
       }
-      expect(mockDispatchEvent.mock.calls[calls - 1][0]).toBe(expected.eventName)
-      expect(mockDispatchEvent.mock.calls[calls - 1][1]).toEqual({
+      expect(dispatchCalls[calls - 1][0]).toBe(expected.eventName)
+      expect(dispatchCalls[calls - 1][1]).toEqual({
         errors: expected.errors,
         inputName: 'test_input_name',
         isValid: expected.isValid,
