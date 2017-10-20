@@ -54,9 +54,9 @@ class PureInput extends Component {
 const TestInput = StrapInput(PureInput)
 
 describe('StrapInput', () => {
-  const getComponent = (options) => {
-    const { validate, warn, disabled, readOnly, asyncValidation } = options
-    const mockListenTo = jest.fn()
+  const getComponent = (options = {}) => {
+    const { validate, warn, disabled, readOnly, asyncValidation, listenTo } = options
+    const mockListenTo = listenTo || jest.fn()
     const mockDispatchEvent = jest.fn()
 
     const component = shallow(
@@ -498,69 +498,70 @@ describe('StrapInput', () => {
   })
 
   it('removes async error onChange', async (done) => {
-    const mockListenTo = jest.fn()
-    const mockDispatchEvent = jest.fn()
-
-    const component = shallow(
-      (
-        <TestInput
-          name="test_input_name"
-        />
-      ),
-      {
-        context: {
-          listenTo: mockListenTo,
-          dispatchEvent: mockDispatchEvent,
-        },
-      }
-    )
-
+    const { component, instance } = getComponent()
     component.setState({ errors: { async: 'some async error' } })
     expect(component.state('errors')).toEqual({ async: 'some async error' })
 
-    const instance = component.instance()
     await instance.handleOnChange('some_value')
 
     expect(component.state('errors')).toEqual({ })
-
     done()
   })
 
-  it('returns validation state onFormSubmit event', async (done) => {
-    const mockDispatchEvent = jest.fn()
+  it('returns validation state onFormAsyncValidate event', async (done) => {
     const listeners = {}
-    const listenTo = (eventName, method) => {
-      listeners[eventName] = method
-    }
-
-    const component = shallow(
-      (
-        <TestInput
-          name="test_input_name"
-          validate={[
-            value => (value === 'wrong_value' ? 'error' : undefined),
-          ]}
-        />
-      ),
-      {
-        context: {
-          listenTo,
-          dispatchEvent: mockDispatchEvent,
-        },
-      }
-    )
+    const { component } = getComponent({
+      listenTo: (eventName, method) => {
+        listeners[eventName] = method
+      },
+      asyncValidation: (value) => {
+        if (value === 'wrong_value') {
+          throw Error('async error')
+        }
+      },
+    })
 
     component.setState({ value: 'wrong_value' })
-    let result = await listeners.onFormSubmit()
+    let result = await listeners.onFormAsyncValidate()
     expect(result).toEqual({
-      errors: { 0: 'error' },
+      errors: { async: 'async error' },
       inputName: 'test_input_name',
       value: 'wrong_value',
       warnings: {},
     })
 
     component.setState({ value: 'test_value' })
-    result = await listeners.onFormSubmit()
+    result = await listeners.onFormAsyncValidate()
+    expect(result).toEqual({
+      errors: {},
+      inputName: 'test_input_name',
+      value: 'test_value',
+      warnings: {},
+    })
+
+    done()
+  })
+
+  it('returns validation state onFormSyncValidate event', async (done) => {
+    const listeners = {}
+    const { component } = getComponent({
+      listenTo: (eventName, method) => {
+        listeners[eventName] = method
+      },
+      validate: [value => (value === 'wrong_value' ? 'sync error' : undefined)],
+    })
+
+    component.setState({ value: 'wrong_value' })
+    let result = listeners.onFormSyncValidate()
+    expect(result).toEqual({
+      errors: { 0: 'sync error' },
+      inputName: 'test_input_name',
+      value: 'wrong_value',
+      warnings: {},
+    })
+
+    component.setState({ value: 'test_value' })
+    result = await listeners.onFormSyncValidate()
     expect(result).toEqual({
       errors: {},
       inputName: 'test_input_name',

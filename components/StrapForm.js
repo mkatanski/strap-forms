@@ -150,21 +150,27 @@ export default function (Form) {
       this.submitted = true
       this.updateForm()
 
-      const onSubmitHandlers = this.dispatchEvent('onFormSubmit', {
-        isPristine: this.isPristine,
-        errors: this.errors,
-        warnings: this.warnings,
-        values: this.values,
-      })
+      // TODO: Add possibility to edit validators during this event
+      const syncResult = this.dispatchEvent('onFormSyncValidate')
+      this.updateForm(syncResult)
 
-      let res = []
-      if (onSubmitHandlers) {
-        res = await Promise.all(onSubmitHandlers)
+      if (!isValid(this.errors)) {
+        this.isSubmitting = false
+        this.updateForm()
+        return
       }
 
-      this.updateForm(res)
+      const asyncHandlers = this.dispatchEvent('onFormAsyncValidate')
+
+      let asyncResult = []
+      if (asyncHandlers) {
+        asyncResult = await Promise.all(asyncHandlers)
+      }
+
+      this.updateForm(asyncResult)
 
       if (isValid(this.errors)) {
+        this.dispatchEvent('onFormSubmit', this.formData)
         await this.props.onSubmit(this.formData)
       }
 
