@@ -78,6 +78,12 @@ export default function (Input) {
       }
     }
 
+    getValidationResult = validationResult => ({
+      inputName: this.props.name,
+      value: this.state.value,
+      ...validationResult,
+    })
+
     isValid = errors => Object.keys(errors).length === 0
 
     dispatchEvent = (eventName, data) => {
@@ -210,12 +216,6 @@ export default function (Input) {
       this.dispatchEvent('onInputBlur', { value, isValid, ...validationResult })
       this.setState({ ...validationResult })
     }
-
-    getValidationResult = validationResult => ({
-      inputName: this.props.name,
-      value: this.state.value,
-      ...validationResult,
-    })
 
     handleOnFormAsyncValidate = async () => {
       const asyncError = await this.performAsyncValidation(this.state.value)
