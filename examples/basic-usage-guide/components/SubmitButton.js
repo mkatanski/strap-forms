@@ -1,7 +1,7 @@
 import React from 'react'
 import T from 'prop-types'
 
-import { StrapFormContextTypes } from '../../../../index'
+import { StrapFormContextTypes } from '../../../index'
 
 class SubmitButton extends React.Component {
   static contextTypes = {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StrapInput, StrapInputPropTypes } from '../../../../index'
+import { StrapInput, StrapInputPropTypes } from '../../../index'
 
 class InputPure extends Component {
   static propTypes = {

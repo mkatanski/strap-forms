@@ -2,7 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 
 import Section from '../examples/Section'
-import MyForm from '../examples/basic-usage-guide/custom/MyForm'
+import MyForm from '../examples/basic-usage-guide/MyForm'
 import BasicForm from '../examples/reactstrap/basic-form'
 
 storiesOf('Basic Usage Guide', module)
@@ -14,7 +14,7 @@ storiesOf('Basic Usage Guide', module)
     </Section>
   ))
 
-storiesOf('Reactstrap', module)
+storiesOf('Examples with Reactstrap', module)
   .add('Basic Form', () => (
     <Section
       storyTitle="Basic Form"

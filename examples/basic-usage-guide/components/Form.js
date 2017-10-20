@@ -1,5 +1,5 @@
 import React from 'react'
-import { StrapForm, StrapFormPropTypes } from '../../../../index'
+import { StrapForm, StrapFormPropTypes } from '../../../index'
 
 const FormPure = ({ children, handleSubmit }) => (
   <form onSubmit={handleSubmit} >{children}</form>
