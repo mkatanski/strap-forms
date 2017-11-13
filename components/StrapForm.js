@@ -194,6 +194,10 @@ export default function (Form) {
       this.updateFormData({ isSubmitting: false })
     }
 
+    submit = () => {
+      this.handleSubmit({ preventDefault: () => {} })
+    }
+
     render() {
       return (
         <Form handleSubmit={this.handleSubmit}>
