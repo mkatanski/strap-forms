@@ -235,6 +235,18 @@ export default function (Input) {
       return this.getValidationResult(validationResult)
     }
 
+    filterProps = () => {
+      const externalProps = {}
+      const propTypesKeys = Object.keys(this.constructor.propTypes)
+      Object.keys(this.props).forEach((key) => {
+        if (propTypesKeys.includes(key)) {
+          return
+        }
+        externalProps[key] = this.props[key]
+      })
+      return externalProps
+    }
+
     render() {
       const { errors, warnings, value } = this.state
       const props = {
@@ -255,17 +267,8 @@ export default function (Input) {
         isValidating: this.asyncQueue.length > 0,
       }
 
-      const externalProps = {}
-      const propTypesKeys = Object.keys(this.constructor.propTypes)
-      Object.keys(this.props).forEach((key) => {
-        if (propTypesKeys.includes(key)) {
-          return
-        }
-        externalProps[key] = this.props[key]
-      })
-
       return (
-        <Input {...externalProps} {...props}>
+        <Input {...this.filterProps()} {...props}>
           {this.props.children}
         </Input>
       )

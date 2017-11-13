@@ -71,6 +71,14 @@ export default function (Form) {
       }
     }
 
+    getValueWithDefault = (value, defaultValue) => (value !== undefined ? value : defaultValue)
+
+    getFormInputData = inputData => ({
+      ...this.formData,
+      inputName: inputData.inputName,
+      value: inputData.value,
+    })
+
     dispatchEvent = (eventName, eventData) => {
       const listenersResults = []
 
@@ -96,17 +104,14 @@ export default function (Form) {
       this.listeners[eventName].push(func)
     }
 
-    handleOnBeforeAsyncValidation = (e) => {
-      this.validating.push(e.inputName)
-      this.dispatchEvent('onFormUpdate', this.formData)
-    }
+    updateFormData = (formData) => {
+      const fData = { ...formData }
+      const inputsData = fData.inputsData
 
-    handleOnAfterAsyncValidation = (e) => {
-      const i = this.validating.indexOf(e.inputName)
-      this.validating.splice(i, 1)
-    }
+      this.isPristine = this.getValueWithDefault(fData.isPristine, this.isPristine)
+      this.isSubmitting = this.getValueWithDefault(fData.isSubmitting, this.isSubmitting)
+      this.submitted = this.getValueWithDefault(fData.submitted, this.submitted)
 
-    updateForm = (inputsData) => {
       if (isArray(inputsData) && inputsData.length !== 0) {
         inputsData.forEach((data) => {
           try {
@@ -123,40 +128,42 @@ export default function (Form) {
       this.dispatchEvent('onFormUpdate', this.formData)
     }
 
+    handleOnBeforeAsyncValidation = (e) => {
+      this.validating.push(e.inputName)
+      this.dispatchEvent('onFormUpdate', this.formData)
+    }
+
+    handleOnAfterAsyncValidation = (e) => {
+      const i = this.validating.indexOf(e.inputName)
+      this.validating.splice(i, 1)
+    }
+
+    handleInput = (method, inputOptions, isPristine) => {
+      this.updateFormData({
+        isPristine: this.getValueWithDefault(isPristine, this.isPristine),
+        inputsData: [inputOptions],
+      })
+      this.props[method](this.getFormInputData(inputOptions))
+    }
+
     handleOnInputBlur = (inputOptions) => {
-      this.isPristine = false
-      this.updateForm([inputOptions])
-      const formData = {
-        ...this.formData,
-        inputName: inputOptions.inputName,
-        value: inputOptions.value,
-      }
-      this.props.onInputBlur(formData)
+      this.handleInput('onInputBlur', inputOptions, false)
     }
 
     handleOnInputChange = (inputOptions) => {
-      this.updateForm([inputOptions])
-      const formData = {
-        ...this.formData,
-        inputName: inputOptions.inputName,
-        value: inputOptions.value,
-      }
-      this.props.onInputChange(formData)
+      this.handleInput('onInputChange', inputOptions)
     }
 
     handleSubmit = async (event) => {
       event.preventDefault()
-      this.isSubmitting = true
-      this.submitted = true
-      this.updateForm()
+      this.updateFormData({ isSubmitting: true, submitted: true })
 
       // TODO: Add possibility to edit validators during this event
       const syncResult = this.dispatchEvent('onFormSyncValidate')
-      this.updateForm(syncResult)
+      this.updateFormData({ inputsData: syncResult })
 
       if (!isValid(this.errors)) {
-        this.isSubmitting = false
-        this.updateForm()
+        this.updateFormData({ isSubmitting: false })
         return
       }
 
@@ -167,15 +174,14 @@ export default function (Form) {
         asyncResult = await Promise.all(asyncHandlers)
       }
 
-      this.updateForm(asyncResult)
+      this.updateFormData({ inputsData: asyncResult })
 
       if (isValid(this.errors)) {
         this.dispatchEvent('onFormSubmit', this.formData)
         await this.props.onSubmit(this.formData)
       }
 
-      this.isSubmitting = false
-      this.updateForm()
+      this.updateFormData({ isSubmitting: false })
     }
 
     render() {
