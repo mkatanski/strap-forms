@@ -161,7 +161,7 @@ describe('StrapInput', () => {
       <ContextWrapper>
         <TestInput
           name="test_input_name"
-          initialValue="init value"
+          value="init value"
           className="customProperty"
         />
       </ContextWrapper>

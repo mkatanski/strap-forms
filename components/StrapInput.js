@@ -34,9 +34,9 @@ export default function (Input) {
       asyncValidation: T.func,
       children: T.any,
       disabled: T.bool,
-      initialValue: T.any,
       readOnly: T.bool,
       validate: T.array,
+      value: T.any,
       warn: T.array,
     }
 
@@ -47,7 +47,7 @@ export default function (Input) {
       readOnly: false,
       validate: [],
       warn: [],
-      initialValue: '',
+      value: undefined,
     }
 
     constructor(...args) {
@@ -61,7 +61,7 @@ export default function (Input) {
       isValidating: false,
       errors: {},
       warnings: {},
-      value: this.props.initialValue || '',
+      value: this.props.value || '',
     }
 
     componentWillMount() {
@@ -69,6 +69,12 @@ export default function (Input) {
       this.context.listenTo('onFormAsyncValidate', this.handleOnFormAsyncValidate)
       if (this.context.registerToGroup) {
         this.context.registerToGroup(this.props.name)
+      }
+    }
+
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.value && nextProps.value !== this.props.value) {
+        this.setState({ value: nextProps.value })
       }
     }
 
