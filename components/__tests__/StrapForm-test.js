@@ -156,11 +156,12 @@ describe('StrapForm', () => {
     expect(instance.submitted).toBe(false)
     await instance.handleSubmit({ preventDefault: preventDefaultMock })
 
-    expect(instance.dispatchEvent.mock.calls.length).toBe(4)
+    expect(instance.dispatchEvent.mock.calls.length).toBe(5)
     expect(instance.dispatchEvent.mock.calls[0][0]).toBe('onFormUpdate')
     expect(instance.dispatchEvent.mock.calls[1][0]).toBe('onFormSyncValidate')
     expect(instance.dispatchEvent.mock.calls[2][0]).toBe('onFormUpdate')
     expect(instance.dispatchEvent.mock.calls[3][0]).toBe('onFormUpdate')
+    expect(instance.dispatchEvent.mock.calls[4][0]).toBe('onFormSubmitFail')
     expect(onSubmitMock.mock.calls.length).toBe(0)
     expect(instance.submitted).toBe(true)
     expect(instance.isSubmitting).toBe(false)

@@ -15,6 +15,10 @@ class MyForm extends React.Component {
     console.log('The form is submitting', values)
   }
 
+  handleSubmitFail = ({ errors }) => {
+    console.log('Can\'t submit: ', errors)
+  }
+
   render() {
     const isEmail = val => (val === '' || (/\S+@\S+\.\S+/.test(val)) ? undefined : 'Invalid email')
     const gmail = val => (val.indexOf('gmail.com') === -1 ? undefined : 'Why Gmail?')
@@ -31,7 +35,7 @@ class MyForm extends React.Component {
     }
 
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form onSubmit={this.handleSubmit} onSubmitFail={this.handleSubmitFail}>
         <Group>
           <Label htmlFor="name">
             Your name <sup>&lowast;</sup>

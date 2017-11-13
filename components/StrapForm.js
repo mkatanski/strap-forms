@@ -12,6 +12,7 @@ export const StrapFormPropTypes = {
   onInputBlur: T.func,
   onInputChange: T.func,
   onSubmit: T.func,
+  onSubmitFail: T.func,
 }
 
 export default function (Form) {
@@ -164,6 +165,10 @@ export default function (Form) {
 
       if (!isValid(this.errors)) {
         this.updateFormData({ isSubmitting: false })
+        this.dispatchEvent('onFormSubmitFail', this.formData)
+        if (this.props.onSubmitFail) {
+          await this.props.onSubmitFail(this.formData)
+        }
         return
       }
 
@@ -179,6 +184,11 @@ export default function (Form) {
       if (isValid(this.errors)) {
         this.dispatchEvent('onFormSubmit', this.formData)
         await this.props.onSubmit(this.formData)
+      } else {
+        this.dispatchEvent('onFormSubmitFail', this.formData)
+        if (this.props.onSubmitFail) {
+          await this.props.onSubmitFail(this.formData)
+        }
       }
 
       this.updateFormData({ isSubmitting: false })
