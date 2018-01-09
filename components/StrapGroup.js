@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import React, { Component } from 'react'
 import T from 'prop-types'
 

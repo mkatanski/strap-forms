@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+// import 'babel-polyfill'
 import React from 'react';
 import { configure, setAddon, addDecorator } from '@storybook/react';
 import { checkA11y } from 'storybook-addon-a11y';
