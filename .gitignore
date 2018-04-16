@@ -1,22 +1,8 @@
-# dependencies
-node_modules
-.npmrc
-
-# log files
-*.log
-
-# docs
-.gh-pages
-.DS_Store
-
-# distribution files
-cjs
-es
-
-# a11y files
-a11y/results
-
-# we yarn folks here
-package-lock.json
-
-coverage
+.git/
+.idea/
+coverage/
+node_modules/
+temp/
+npm-debug.log
+bash.exe.stackdump
+syncExternalsList.js

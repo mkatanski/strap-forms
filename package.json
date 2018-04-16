@@ -1,148 +1,120 @@
 {
-  "name": "strap-forms",
-  "version": "0.4.2",
-  "description": "Lightweight, expandable, simple and fast to implement forms for React.js",
-  "main": "cjs/index.js",
+  "name": "dyna-ts-react-module-boilerplate",
+  "version": "5.0.5",
+  "description": "About",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mkatanski/StrapForms.git"
+    "url": "http://github.com/aneldev/dyna-ts-react-module-boilerplate"
   },
-  "keywords": [
-    "React",
-    "Forms",
-    "Bootstrap"
-  ],
-  "author": "Michal Katanski <contact@mkatanski.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mkatanski/strap-forms/issues"
-  },
-  "homepage": "https://github.com/mkatanski/strap-forms#readme",
-  "module": "es/index.js",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "scripts": {
-    "check": "npm run lint && npm run test",
-    "lint": "eslint {components,internal}/**",
-    "test": "jest '/(__tests__|components|lib|internal)/' --verbose --coverage",
-    "test-report": "jest '/(__tests__|components|lib|internal)/' --verbose --coverage && codecov",
-    "test-watch": "jest '/(__tests__|components|lib|internal)/' --watch --verbose",
-    "test-ssr": "npm run build && node server-side-rendering-tests/*.js",
-    "prepublish": "npm run build",
-    "build": "node scripts/build.js",
-    "commitmsg": "validate-commit-msg",
-    "commit": "git cz",
-    "storybook": "start-storybook -p 9000",
-    "build-storybook": "build-storybook",
-    "start": "npm run storybook",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "create": "echo Creation started... && rm -rf .git && rm -rf package-lock.json && mv README.md README.boilerplate.md && echo \\# readme > README.md && npm install && node _boilerplate.js && echo --- module created",
+    "start": "webpack-dev-server --config webpack.dev.config.js --port 3200 --devtool eval --progress --inline --hot --content-base dev/public --open --host 127.0.0.1",
+    "build": "rimraf ./dist/ && npm run .build-index.d.ts && npm run .build-dist",
+    ".build-index.d.ts": "tsc && rm ./dist/index.js && npm run .build-index.d.ts-clear",
+    ".build-index.d.ts-clear": "cd dist/ && find . -name \\*.js -delete && cd ..",
+    ".build-dist": "set NODE_ENV=production && webpack --config webpack.dist.config.js",
+    "release": "npm run build && npm run publish-push",
+    "commit": "git add -u && git add -A && git commit -m",
+    "commit-amend": "git add -u && git add -A && git commit --amend --no-edit",
+    "publish-push": "git add -u && git add -A && git commit -m --amend --no-edit; npm version patch && npm publish && git push && git push --tags",
+    "sync-externals": "node syncExternals.js",
+    "test": "jest --coverage --no-cache --runInBand",
+    "test-watch": "jest --watch --verbose --runInBand",
+    "clear-npm-cache": "npm cache clear --force",
+    "reinstall": "rm ./package-lock.json; rm -rf ./node_modules; npm install"
   },
-  "files": [
-    "cjs/**/*",
-    "es/**/*"
-  ],
-  "contributors": [
-    {
-      "name": "Michal Katanski",
-      "email": "contact@mkatanski.com"
-    }
-  ],
-  "peerDependencies": {
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-addons-css-transition-group": "^15.6.2",
-    "react-addons-transition-group": "^15.6.2",
-    "bootstrap": "^4.0.0-alpha.6",
-    "reactstrap": "^4.8.0"
-  },
+  "keywords": [],
+  "author": "Anel dev",
+  "license": "MIT",
   "dependencies": {
-    "fbjs": "^0.9.0-alpha.2"
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   },
   "devDependencies": {
-    "@storybook/addon-centered": "3.2.10",
-    "@storybook/addon-info": "^3.0.0",
-    "@storybook/react": "^3.0.0",
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.1",
-    "babel-jest": "^21.2.0",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "babel-plugin-transform-object-assign": "^6.22.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.5.1",
-    "babel-preset-es2017": "^6.24.1",
-    "babel-preset-react": "^6.11.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "bootstrap": "^4.0.0-alpha.6",
-    "bowser": "^1.6.1",
-    "codecov": "^2.3.0",
-    "commitizen": "^2.9.5",
+    "@types/enzyme": "^3.1.5",
+    "@types/enzyme-adapter-react-16": "^1.0.1",
+    "@types/jest": "^19.2.2",
+    "@types/node": "^7.0.14",
+    "@types/prop-types": "^15.5.2",
+    "@types/react": "^16.0.0",
+    "@types/react-dom": "^16.0.0",
+    "autoprefixer": "^7.1.1",
+    "awesome-typescript-loader": "^3.1.3",
+    "babel-core": "6.11.4",
+    "babel-jest": "^20.0.3",
+    "babel-loader": "6.0.0",
+    "babel-plugin-add-module-exports": "0.1.2",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "6.9.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-runtime": "6.11.6",
+    "chokidar": "^1.7.0",
     "css-loader": "^0.28.4",
-    "cz-conventional-changelog-components": "^1.0.0",
+    "dyna-showcase": "^1.0.0",
     "enzyme": "^3.0.0",
-    "enzyme-adapter-react-15": "^1.0.0",
     "enzyme-adapter-react-16": "^1.0.0",
-    "eslint": "^4.7.2",
-    "eslint-config-airbnb": "^15.1.0",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.1.0",
-    "fbjs-scripts": "^0.8.1",
-    "gh-pages": "1.0.0",
-    "husky": "^0.14.3",
-    "jest": "^21.2.0",
-    "lcov2badge": "^0.1.0",
-    "lint-staged": "^4.2.3",
-    "node-sass": "4.5.3",
-    "postcss-loader": "^2.0.5",
-    "prettier": "^1.2.2",
-    "prop-types": "^15.5.8",
-    "react": "^16.0.0",
-    "react-addons-css-transition-group": "^15.6.2",
-    "react-addons-transition-group": "^15.6.2",
-    "react-dom": "^16.0.0",
+    "enzyme-to-json": "^3.0.0",
+    "file-loader": "^0.9.0",
+    "font-awesome": "^4.7.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^21.1.0",
+    "jest-cli": "^20.0.4",
+    "jest-junit": "^1.5.1",
+    "jsdom": "11.5.1",
+    "jsdom-global": "3.0.2",
+    "json-loader": "^0.5.4",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.4",
+    "node-sass": "^4.5.3",
+    "postcss-cli": "^4.1.0",
+    "postcss-loader": "^2.0.6",
+    "raw-loader": "^0.5.1",
     "react-test-renderer": "^16.0.0",
-    "reactstrap": "^4.8.0",
-    "requestanimationframe": "^0.0.23",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.5",
-    "semantic-release": "^8.0.3",
-    "shelljs": "^0.7.5",
-    "storybook-addon-a11y": "^3.0.0",
-    "validate-commit-msg": "^2.10.1",
-    "winston": "^2.3.1"
+    "source-map-loader": "0.1.5",
+    "style-loader": "^0.18.2",
+    "svg-inline-loader": "^0.8.0",
+    "ts-jest": "^20.0.6",
+    "typescript": "^2.3.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.5.6",
+    "webpack-dev-middleware": "^1.12.0",
+    "webpack-dev-server": "^2.7.1"
   },
   "jest": {
-    "coverageDirectory": "./coverage",
+    "setupTestFrameworkScriptFile": "./tests/setup/testsetup.js",
+    "automock": false,
+    "collectCoverage": false,
+    "testEnvironment": "jsdom",
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(src|tests)/.*\\.(test|spec)\\.(ts|tsx|js|jsx)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx"
+    ],
     "moduleNameMapper": {
-      "^.+\\.(scss)$": "<rootDir>/lib/styleMock.js"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier --trailing-comma es5 --single-quote --write",
-      "git add"
+      "\\.(css|less|scss|jpg|png|svg|gif)$": "identity-obj-proxy"
+    },
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx,js,jsx}",
+      "!src/**/*.d.ts"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
     ]
   },
-  "config": {
-    "validate-commit-msg": {
-      "types": [
-        "feat",
-        "fix",
-        "docs",
-        "style",
-        "refactor",
-        "perf",
-        "test",
-        "chore",
-        "revert"
-      ],
-      "warnOnFail": false,
-      "maxSubjectLength": 100,
-      "subjectPattern": ".+",
-      "subjectPatternErrorMsg": "Subject does not match subject pattern!"
-    },
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog-components"
-    }
+  "jest-junit": {
+    "output": "./coverage/junit.xml"
   }
 }

@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Input renders with default component 1`] = `
+<input
+  name="test input"
+  onBlur={[Function]}
+  onChange={[Function]}
+  value=""
+/>
+`;
+
+exports[`Input renders with default component and initial value 1`] = `
+<input
+  name="intial value"
+  onBlur={[Function]}
+  onChange={[Function]}
+  value="some value"
+/>
+`;
+
+exports[`Input updates its value on blur 1`] = `
+<input
+  name="test input"
+  onBlur={[Function]}
+  onChange={[Function]}
+  value="new value on blur"
+/>
+`;
+
+exports[`Input updates its value on change 1`] = `
+<input
+  name="test input"
+  onBlur={[Function]}
+  onChange={[Function]}
+  value="new value"
+/>
+`;
+
+exports[`Input updates its value when prop is changed 1`] = `
+<input
+  name="test input"
+  onBlur={[Function]}
+  onChange={[Function]}
+  value="changed value"
+/>
+`;

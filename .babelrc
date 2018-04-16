@@ -1,17 +1,1 @@
-{
-  "presets": [
-    "./scripts/env",
-    "react",
-    "stage-0"
-  ],
-  "plugins": [
-    ["transform-runtime", {
-      "helpers": false,
-      "polyfill": true,
-      "regenerator": true,
-      "moduleName": "babel-runtime"
-    }],
-    "transform-object-assign",
-    "syntax-async-functions"
-  ]
-}
+{ "presets": [ "es2015", "react", "stage-2" ] }

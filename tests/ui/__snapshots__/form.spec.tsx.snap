@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form accepts strap inputs as children (use of contexts registerInput) 1`] = `
+<Form
+  name="test form with children"
+>
+  <form
+    onSubmit={[Function]}
+  >
+    <Input
+      name="input1"
+      syncValidations={
+        Array [
+          [Function],
+        ]
+      }
+      value=""
+    >
+      <input
+        name="input1"
+        onBlur={[Function]}
+        onChange={[Function]}
+        value=""
+      />
+    </Input>
+  </form>
+</Form>
+`;
+
+exports[`Form renders with default component and children 1`] = `
+<form
+  onSubmit={[Function]}
+>
+  <div>
+    children component
+  </div>
+</form>
+`;
