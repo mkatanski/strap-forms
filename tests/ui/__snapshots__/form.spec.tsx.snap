@@ -1,38 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Form accepts strap inputs as children (use of contexts registerInput) 1`] = `
-<Form
-  name="test form with children"
+exports[`Form accepts inputs as children and call registerInput 1`] = `
+<form
+  className={undefined}
+  onSubmit={[Function]}
 >
-  <form
-    onSubmit={[Function]}
-  >
-    <Input
-      name="input1"
-      syncValidations={
-        Array [
-          [Function],
-        ]
-      }
-      value=""
-    >
-      <input
-        name="input1"
-        onBlur={[Function]}
-        onChange={[Function]}
-        value=""
-      />
-    </Input>
-  </form>
-</Form>
+  <input
+    className={undefined}
+    name="input1"
+    onBlur={[Function]}
+    onChange={[Function]}
+    value="test"
+  />
+</form>
+`;
+
+exports[`Form renders with custom component and calls registerInput 1`] = `
+<div>
+  <input
+    className={undefined}
+    name="input2"
+    onBlur={[Function]}
+    onChange={[Function]}
+    value=""
+  />
+</div>
 `;
 
 exports[`Form renders with default component and children 1`] = `
 <form
+  className={undefined}
   onSubmit={[Function]}
 >
   <div>
-    children component
+    some children component
   </div>
 </form>
 `;

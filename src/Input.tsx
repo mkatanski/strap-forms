@@ -1,17 +1,17 @@
 import * as React from "react"
 import * as PropTypes from 'prop-types'
 import { ReactNode } from "react";
+
 import { IComponentProps } from './common'
-import { TFormChildContextTypes } from './Form'
-import { TSyncValidationMethod, SyncValidator } from './Validators'
-import { EventsManager, IEventsManager, EventEmitter } from './EventsManager'
+import { Consumer } from './Form'
 
 export interface IInputProps extends IComponentProps {
+  registerInput: (inputName: string, inputState: TInputState) => {}
   value?: any
-  syncValidations?: Array<TSyncValidationMethod>
+  componentRenderer?: (props: TInputRendererProps) => ReactNode
 }
 
-export type TInputData = {
+export type TInputState = {
   value: any
   isPristine: boolean
   isTouched: boolean
@@ -26,24 +26,18 @@ export type TInputRendererProps = {
   name: string,
 }
 
-export class Input extends React.Component<IInputProps> {
+export class InputPure extends React.Component<IInputProps> {
   static defaultProps: IInputProps = {
     name: '',
     value: '',
-    syncValidations: []
+    registerInput: (inputName: string, inputState: TInputState) => { return null }
   }
 
   static contextTypes = {
     strapActions: PropTypes.object
   }
 
-  private eventsManager: IEventsManager
-
-  context: {
-    strapActions: TFormChildContextTypes
-  }
-
-  state: TInputData = {
+  state: TInputState = {
     value: this.props.value,
     isPristine: true,
     isTouched: false,
@@ -51,22 +45,11 @@ export class Input extends React.Component<IInputProps> {
   }
 
   public componentDidMount() {
-    if (this.context.strapActions) {
-      this.context.strapActions.registerInput(this.props.name, this.state)
-      this.eventsManager = this.context.strapActions.getEventManager()
-
-      // Prepare and add all sync validation methods
-      this.props.syncValidations.forEach((validationMethod) => {
-        const syncValidator = new SyncValidator(this.props.name, validationMethod, 100)
-        this.context.strapActions.getValidationManager().addValidator(syncValidator)
-      })
-    }
+    this.props.registerInput(this.props.name, { ...this.state })
   }
 
   public componentWillUnmount() {
-    if (this.context.strapActions) {
-      this.context.strapActions.deregisterInput(this.props.name)
-    }
+
   }
 
   public componentWillReceiveProps(nextProps: any) {
@@ -85,7 +68,6 @@ export class Input extends React.Component<IInputProps> {
     }
   }
 
-  @EventEmitter
   private handleInputBlur(e: any): void {
     const value = e.target ? e.target.value : e
     this.setState({ value, isTouched: true }, () => {
@@ -93,7 +75,6 @@ export class Input extends React.Component<IInputProps> {
     })
   }
 
-  @EventEmitter
   private handleInputChange(e: any): void {
     const value = e.target ? e.target.value : e
     this.setState({ value, isPristine: false }, () => {
@@ -115,6 +96,19 @@ export class Input extends React.Component<IInputProps> {
 
   public render(): ReactNode {
     const { componentRenderer, children } = this.props
-    return !!componentRenderer ? componentRenderer() : this.defaultRenderer(this._rendererProps)
+    return !!componentRenderer ?
+      componentRenderer(this._rendererProps) :
+      this.defaultRenderer(this._rendererProps)
   }
 }
+
+export const Input = (props: any) => (
+  <Consumer>
+    {context =>
+      <InputPure
+        {...props}
+        registerInput={context.registerInput}
+      />
+    }
+  </Consumer>
+)

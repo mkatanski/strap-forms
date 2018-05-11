@@ -1,18 +1,20 @@
-import * as React from "react"
+import * as React from 'react'
 import * as PropTypes from 'prop-types'
-import { IValidator, SyncValidator, EResultType, ValidationResult, EValidationType } from './Validators'
-import { IValidationManager, ValidationManager } from './ValidationManager'
-import { IEventsManager, EventsManager } from './EventsManager'
-import { TInputData } from './Input'
-import { ReactNode } from "react";
+import { TInputState } from './Input'
+import { ReactNode } from 'react';
 import { IComponentProps } from './common'
 
+export const { Consumer, Provider } = React.createContext({
+  registerInput: (inputName: string, inputState: TInputState) => { }
+});
+
 export interface IFormProps extends IComponentProps {
-  children: any
+  children: any,
+  componentRenderer?: (props: TFormRendererProps) => ReactNode
 }
 
 export type TFormRendererProps = {
-  children: any
+  children: ReactNode
   className: string,
   handleFormSubmit: () => {}
 }
@@ -25,19 +27,15 @@ export type TFormOptions = {
 }
 
 export type TFormChildContextTypes = {
-  registerInput: (inputName: string, data: TInputData) => void,
+  registerInput: (inputName: string, data: TInputState) => void,
   deregisterInput: (inputName: string) => void,
-  getValidationManager: () => IValidationManager
-  getEventManager: () => IEventsManager
 }
 
 export type TInputsData = {
-  [key: string]: TInputData
+  [key: string]: TInputState
 }
 
 export class Form extends React.Component<IFormProps> {
-  private _validationManager: ValidationManager
-  private eventsManager: EventsManager
   private inputsData: TInputsData = {}
   private _options: TFormOptions = {
     isPristine: true,
@@ -57,50 +55,21 @@ export class Form extends React.Component<IFormProps> {
     name: '',
   }
 
-  static childContextTypes = {
-    strapActions: PropTypes.object,
-  }
-
-  constructor(args: any) {
-    super(args)
-    this.eventsManager = new EventsManager()
-    this._validationManager = new ValidationManager({
-      eventsManager: this.eventsManager
-    })
-  }
-
-  componentDidMount() {
+  // componentDidMount() {
     // console.log(this._validationManager)
-  }
+  // }
 
-  public getChildContext() {
-    const context: TFormChildContextTypes = {
-      registerInput: this.registerInput,
-      deregisterInput: this.deregisterInput,
-      getValidationManager: () => {
-        return this._validationManager
-      },
-      getEventManager: () => {
-        return this.eventsManager
-      }
-    }
-
-    return {
-      strapActions: context,
-    }
-  }
-
-  private registerInput(inputName: string, data: TInputData) {
+  private registerInput(inputName: string, inputState: TInputState) {
     if (!this.inputsData) this.inputsData = {}
-    this.inputsData[inputName] = data
+    this.inputsData[inputName] = inputState
   }
 
-  private deregisterInput(inputName: string) {
-    delete this.inputsData[inputName]
-    if (this._validationManager) {
-      this._validationManager.removeValidator(inputName)
-    }
-  }
+  // private deregisterInput(inputName: string) {
+    // delete this.inputsData[inputName]
+    // if (this._validationManager) {
+    //   this._validationManager.removeValidator(inputName)
+    // }
+  // }
 
   private async handleFormSubmit(): Promise<any> {
 
@@ -108,7 +77,10 @@ export class Form extends React.Component<IFormProps> {
 
   private defaultRenderer(props: TFormRendererProps): ReactNode {
     return (
-      <form className={props.className} onSubmit={props.handleFormSubmit}>
+      <form
+        className={props.className}
+        onSubmit={props.handleFormSubmit}
+      >
         {props.children}
       </form>
     )
@@ -116,8 +88,14 @@ export class Form extends React.Component<IFormProps> {
 
   public render(): ReactNode {
     const { componentRenderer, children } = this.props
-    const renderMethod = !!componentRenderer ? componentRenderer : this.defaultRenderer
-
-    return renderMethod(this._rendererProps)
+    return (
+      <Provider value={{
+        registerInput: this.registerInput.bind(this)
+      }}>
+        {!!componentRenderer ?
+            componentRenderer(this._rendererProps) :
+            this.defaultRenderer(this._rendererProps)}
+      </Provider>
+    )
   }
 }

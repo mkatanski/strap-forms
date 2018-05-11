@@ -1,24 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Input renders with custom class name 1`] = `
-<input
-  className="customCssClass"
-  name="customClassName"
-  onBlur={[Function]}
-  onChange={[Function]}
-  value=""
-/>
-`;
-
-exports[`Input renders with custom component 1`] = `
-<div>
-  name: 
-  customRenderer
-  className: 
-  customCssClass
-</div>
-`;
-
 exports[`Input renders with default component 1`] = `
 <input
   name="test input"
@@ -30,8 +11,7 @@ exports[`Input renders with default component 1`] = `
 
 exports[`Input renders with default component and initial value 1`] = `
 <input
-  className={undefined}
-  name="defaultInput"
+  name="intial value"
   onBlur={[Function]}
   onChange={[Function]}
   value="some value"
