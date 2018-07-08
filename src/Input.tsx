@@ -2,39 +2,15 @@ import * as React from "react"
 import * as PropTypes from 'prop-types'
 import { ReactNode } from "react";
 
-import { IComponentProps } from './common'
-import { Consumer } from './Form'
+import { IInputProps, TEventCallback, TInputRendererProps, TInputState} from './Input.types'
 
-export interface IInputProps extends IComponentProps {
-  registerInput: (inputName: string, inputState: TInputState) => {}
-  value?: any
-  componentRenderer?: (props: TInputRendererProps) => ReactNode
-}
-
-export type TInputState = {
-  value: any
-  isPristine: boolean
-  isTouched: boolean
-  isValid: boolean
-}
-
-export type TInputRendererProps = {
-  className: string,
-  onChange: (e: any) => void,
-  onBlur: (e: any) => void,
-  value: any,
-  name: string,
-}
+import { FormContextConsumer } from './Form/Form'
 
 export class InputPure extends React.Component<IInputProps> {
   static defaultProps: IInputProps = {
     name: '',
     value: '',
-    registerInput: (inputName: string, inputState: TInputState) => { return null }
-  }
-
-  static contextTypes = {
-    strapActions: PropTypes.object
+    registerInput: (inputName: string, inputState: TInputState, onEvent: TEventCallback) => { },
   }
 
   state: TInputState = {
@@ -45,20 +21,24 @@ export class InputPure extends React.Component<IInputProps> {
   }
 
   public componentDidMount() {
-    this.props.registerInput(this.props.name, { ...this.state })
+    this.props.registerInput(this.props.name, Object.freeze({ ...this.state }), (event: any) => {
+      if (event.type === 'onValidateDone') {
+
+      }
+    });
   }
 
   public componentWillUnmount() {
-
+    // deregister component
   }
 
-  public componentWillReceiveProps(nextProps: any) {
+  public componentWillReceiveProps(nextProps: IInputProps) {
     if (nextProps.value !== this.state.value) {
       this.setState({ value: nextProps.value })
     }
   }
 
-  private get _rendererProps(): TInputRendererProps {
+  private get rendererProps(): TInputRendererProps {
     return {
       className: this.props.className,
       onChange: this.handleInputChange,
@@ -69,9 +49,16 @@ export class InputPure extends React.Component<IInputProps> {
   }
 
   private handleInputBlur(e: any): void {
+    // const { validateSync, validateAsync } = this.props;
     const value = e.target ? e.target.value : e
-    this.setState({ value, isTouched: true }, () => {
+    this.setState({ value, isTouched: true }, async () => {
       // validate sync and async current component
+      // const syncResult = await validateSync(this.props.name, { ... this.state });
+      // if (syncResult.errors) {
+      //   return;
+      // }
+
+      // const asyncResult = await validateAsync(this.props.name, { ... this.state });
     })
   }
 
@@ -82,33 +69,37 @@ export class InputPure extends React.Component<IInputProps> {
     })
   }
 
-  private defaultRenderer(props: TInputRendererProps): ReactNode {
+  private defaultRenderer(componentProps: TInputRendererProps): ReactNode {
     return (
       <input
-        className={props.className}
-        onChange={props.onChange.bind(this)}
-        onBlur={props.onBlur.bind(this)}
-        value={props.value}
-        name={props.name}
+        className={componentProps.className}
+        onChange={componentProps.onChange.bind(this)}
+        onBlur={componentProps.onBlur.bind(this)}
+        value={componentProps.value}
+        name={componentProps.name}
       />
     )
   }
 
   public render(): ReactNode {
-    const { componentRenderer, children } = this.props
-    return !!componentRenderer ?
-      componentRenderer(this._rendererProps) :
-      this.defaultRenderer(this._rendererProps)
+    const { render, children } = this.props
+    return !!render ?
+      render(this.rendererProps) :
+      this.defaultRenderer(this.rendererProps)
   }
 }
 
+/**
+ * Returns Input component with form's context
+ * @param props Input properties
+ */
 export const Input = (props: any) => (
-  <Consumer>
+  <FormContextConsumer>
     {context =>
       <InputPure
         {...props}
         registerInput={context.registerInput}
       />
     }
-  </Consumer>
+  </FormContextConsumer>
 )

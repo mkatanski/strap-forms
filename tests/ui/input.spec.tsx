@@ -11,7 +11,7 @@ import * as React from 'react';
 import * as ReactDOM from "react-dom";
 import * as enzyme from 'enzyme';
 
-import { Input } from '../../src/';
+import { Input } from '../../src/Input';
 import { InputPure } from '../../src/Input';
 
 jest.mock('react-dom');
@@ -59,7 +59,7 @@ describe('Input', () => {
         <Input
           name='customRenderer'
           className='customCssClass'
-          componentRenderer={(props: any) => {
+          render={(props: any) => {
 
             return (
               <div>

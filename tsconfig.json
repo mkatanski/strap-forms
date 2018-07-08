@@ -15,5 +15,11 @@
     "allowJs": false,
     "emitDecoratorMetadata": true
   },
-  "compileOnSave": false
+  "compileOnSave": false,
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.test.ts",
+    "node_modules/@types",
+    "node_modules/@types/jest"
+  ],
 }

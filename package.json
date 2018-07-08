@@ -1,6 +1,6 @@
 {
-  "name": "dyna-ts-react-module-boilerplate",
-  "version": "5.0.5",
+  "name": "strap-forms",
+  "version": "2.0.0",
   "description": "About",
   "repository": {
     "type": "git",
@@ -9,7 +9,6 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "create": "echo Creation started... && rm -rf .git && rm -rf package-lock.json && mv README.md README.boilerplate.md && echo \\# readme > README.md && npm install && node _boilerplate.js && echo --- module created",
     "start": "webpack-dev-server --config webpack.dev.config.js --port 3200 --devtool eval --progress --inline --hot --content-base dev/public --open --host 127.0.0.1",
     "build": "rimraf ./dist/ && npm run .build-index.d.ts && npm run .build-dist",
     ".build-index.d.ts": "tsc && rm ./dist/index.js && npm run .build-index.d.ts-clear",
@@ -19,14 +18,14 @@
     "commit": "git add -u && git add -A && git commit -m",
     "commit-amend": "git add -u && git add -A && git commit --amend --no-edit",
     "publish-push": "git add -u && git add -A && git commit -m --amend --no-edit; npm version patch && npm publish && git push && git push --tags",
-    "sync-externals": "node syncExternals.js",
     "test": "jest --coverage --no-cache --runInBand",
     "test-watch": "jest --watch --verbose --runInBand",
     "clear-npm-cache": "npm cache clear --force",
-    "reinstall": "rm ./package-lock.json; rm -rf ./node_modules; npm install"
+    "reinstall": "rm ./package-lock.json; rm -rf ./node_modules; npm install",
+    "docs": "typedoc --options typedoc.json ./src/*.ts*"
   },
   "keywords": [],
-  "author": "Anel dev",
+  "author": "Michał Katański",
   "license": "MIT",
   "dependencies": {
     "prop-types": "^15.6.0",
@@ -36,7 +35,7 @@
   "devDependencies": {
     "@types/enzyme": "^3.1.5",
     "@types/enzyme-adapter-react-16": "^1.0.1",
-    "@types/jest": "^19.2.2",
+    "@types/jest": "^19.2.4",
     "@types/node": "^7.0.14",
     "@types/prop-types": "^15.5.2",
     "@types/react": "^16.3.14",
@@ -81,7 +80,8 @@
     "source-map-loader": "0.1.5",
     "style-loader": "^0.18.2",
     "svg-inline-loader": "^0.8.0",
-    "ts-jest": "^20.0.6",
+    "ts-jest": "^20.0.14",
+    "typedoc": "^0.11.1",
     "typescript": "^2.3.2",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.6",
@@ -91,7 +91,7 @@
   "jest": {
     "setupTestFrameworkScriptFile": "./tests/setup/testsetup.js",
     "automock": false,
-    "collectCoverage": false,
+    "collectCoverage": true,
     "testEnvironment": "jsdom",
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
@@ -113,7 +113,13 @@
     ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
-    ]
+    ],
+    "globals": {
+      "ts-jest": {
+        "ignoreCoverageForDecorators": true,
+        "ignoreCoverageForAllDecorators": true
+      }
+    }
   },
   "jest-junit": {
     "output": "./coverage/junit.xml"

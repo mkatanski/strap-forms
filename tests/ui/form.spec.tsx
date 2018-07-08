@@ -12,7 +12,7 @@ import * as ReactDOM from "react-dom";
 import * as enzyme from 'enzyme';
 
 import { Form, Input } from '../../src/';
-import { Consumer } from '../../src/Form'
+// import { Consumer } from '../../src/Form/Form'
 
 jest.mock('react-dom');
 
@@ -45,7 +45,7 @@ describe('Form', () => {
       "isTouched": false,
       "isValid": false,
       "value": "test",
-    });
+    }, expect.any(Function));
   })
 
   it('renders with custom component and calls registerInput', () => {
@@ -53,7 +53,7 @@ describe('Form', () => {
     const component = TestRenderer.create((
       <Form
         name='customComponent'
-        componentRenderer={props => {
+        componentRenderer={(props: any) => {
           return (
             <div>
               {props.children}
@@ -75,6 +75,6 @@ describe('Form', () => {
       "isTouched": false,
       "isValid": false,
       "value": "",
-    });
+    }, expect.any(Function));
   })
 });

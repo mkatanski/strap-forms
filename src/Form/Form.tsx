@@ -1,48 +1,38 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-import { TInputState } from './Input'
+import { TInputState } from '../Input'
 import { ReactNode } from 'react';
-import { IComponentProps } from './common'
 
-export const { Consumer, Provider } = React.createContext({
-  registerInput: (inputName: string, inputState: TInputState) => { }
+import {
+  IFormProps,
+  TFormChildContextTypes,
+  TFormOptions,
+  TFormRendererProps,
+  TInputsData
+} from './types'
+
+const { Consumer, Provider } = React.createContext({
+  registerInput: (inputName: string, inputState: TInputState) => { },
+  eventsObservable: {},
 });
 
-export interface IFormProps extends IComponentProps {
-  children: any,
-  componentRenderer?: (props: TFormRendererProps) => ReactNode
-}
-
-export type TFormRendererProps = {
-  children: ReactNode
-  className: string,
-  handleFormSubmit: () => {}
-}
-
-export type TFormOptions = {
-  isPristine: boolean
-  isSubmitted: boolean
-  isTouched: boolean
-  isValid: boolean
-}
-
-export type TFormChildContextTypes = {
-  registerInput: (inputName: string, data: TInputState) => void,
-  deregisterInput: (inputName: string) => void,
-}
-
-export type TInputsData = {
-  [key: string]: TInputState
-}
+export const FormContextConsumer = Consumer
 
 export class Form extends React.Component<IFormProps> {
   private inputsData: TInputsData = {}
+
   private _options: TFormOptions = {
     isPristine: true,
     isSubmitted: false,
     isTouched: false,
     isValid: false,
   }
+
+  private inputs: {}
+  private errors: {}
+  private warnings: {}
+
+  private eventsObservable: Object = {}
 
   private _rendererProps: TFormRendererProps = {
     children: this.props.children,
@@ -90,7 +80,8 @@ export class Form extends React.Component<IFormProps> {
     const { componentRenderer, children } = this.props
     return (
       <Provider value={{
-        registerInput: this.registerInput.bind(this)
+        registerInput: this.registerInput.bind(this),
+        eventsObservable: this.eventsObservable,
       }}>
         {!!componentRenderer ?
             componentRenderer(this._rendererProps) :
@@ -99,3 +90,5 @@ export class Form extends React.Component<IFormProps> {
     )
   }
 }
+
+

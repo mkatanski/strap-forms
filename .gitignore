@@ -3,6 +3,7 @@
 coverage/
 node_modules/
 temp/
+docs_api/
 npm-debug.log
 bash.exe.stackdump
 syncExternalsList.js
