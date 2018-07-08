@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-import { TInputState } from '../Input'
+import { TInputState } from '../Input.types'
 import { ReactNode } from 'react';
 
 import {
@@ -13,6 +13,7 @@ import {
 
 const { Consumer, Provider } = React.createContext({
   registerInput: (inputName: string, inputState: TInputState) => { },
+  validate: () => { },
   eventsObservable: {},
 });
 
@@ -81,6 +82,7 @@ export class Form extends React.Component<IFormProps> {
     return (
       <Provider value={{
         registerInput: this.registerInput.bind(this),
+        validate: () => {},
         eventsObservable: this.eventsObservable,
       }}>
         {!!componentRenderer ?

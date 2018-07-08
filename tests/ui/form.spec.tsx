@@ -40,12 +40,7 @@ describe('Form', () => {
 
     expect(registerSpy).toHaveBeenCalled();
     expect(registerSpy.mock.calls.length).toBe(1);
-    expect(registerSpy).toBeCalledWith('input1', {
-      "isPristine": true,
-      "isTouched": false,
-      "isValid": false,
-      "value": "test",
-    }, expect.any(Function));
+    expect(registerSpy).toBeCalledWith('input1', expect.any(Function));
   })
 
   it('renders with custom component and calls registerInput', () => {
@@ -70,11 +65,6 @@ describe('Form', () => {
 
     expect(registerSpy).toHaveBeenCalled();
     expect(registerSpy.mock.calls.length).toBe(2);
-    expect(registerSpy).toBeCalledWith('input2', {
-      "isPristine": true,
-      "isTouched": false,
-      "isValid": false,
-      "value": "",
-    }, expect.any(Function));
+    expect(registerSpy).toBeCalledWith('input2', expect.any(Function));
   })
 });

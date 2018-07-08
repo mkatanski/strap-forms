@@ -1,16 +1,27 @@
 import * as React from "react"
 import * as PropTypes from 'prop-types'
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+import {
+  StrapEventType,
+  TEventCallback,
+  TEventData,
+  TValidationResult,
+  ValidationResultType
+} from './common'
 
-import { IInputProps, TEventCallback, TInputRendererProps, TInputState} from './Input.types'
+import {
+  IInputPureProps,
+  TInputRendererProps,
+  TInputState,
+} from './Input.types'
 
 import { FormContextConsumer } from './Form/Form'
 
-export class InputPure extends React.Component<IInputProps> {
-  static defaultProps: IInputProps = {
+export class InputPure extends React.Component<IInputPureProps> {
+  static defaultProps: IInputPureProps = {
     name: '',
     value: '',
-    registerInput: (inputName: string, inputState: TInputState, onEvent: TEventCallback) => { },
+    registerInput: (inputName: string, onEvent: TEventCallback) => { },
   }
 
   state: TInputState = {
@@ -21,9 +32,9 @@ export class InputPure extends React.Component<IInputProps> {
   }
 
   public componentDidMount() {
-    this.props.registerInput(this.props.name, Object.freeze({ ...this.state }), (event: any) => {
-      if (event.type === 'onValidateDone') {
-
+    this.props.registerInput(this.props.name, (event: TEventData) => {
+      if (event.type === StrapEventType.onValidateDone) {
+        this.onValidationComplete(event.data)
       }
     });
   }
@@ -32,9 +43,23 @@ export class InputPure extends React.Component<IInputProps> {
     // deregister component
   }
 
-  public componentWillReceiveProps(nextProps: IInputProps) {
+  public componentWillReceiveProps(nextProps: IInputPureProps) {
     if (nextProps.value !== this.state.value) {
       this.setState({ value: nextProps.value })
+    }
+  }
+
+  private onValidationComplete(data: TValidationResult) {
+    if (data.type === ValidationResultType.Success) {
+      this.setState({ isValid: true });
+    }
+
+    if (data.type === ValidationResultType.Error) {
+      this.setState({ isValid: false });
+    }
+
+    if (data.type === ValidationResultType.Warning) {
+      this.setState({ isValid: false });
     }
   }
 
@@ -49,23 +74,22 @@ export class InputPure extends React.Component<IInputProps> {
   }
 
   private handleInputBlur(e: any): void {
-    // const { validateSync, validateAsync } = this.props;
+    const { onValidate, name } = this.props;
     const value = e.target ? e.target.value : e
-    this.setState({ value, isTouched: true }, async () => {
-      // validate sync and async current component
-      // const syncResult = await validateSync(this.props.name, { ... this.state });
-      // if (syncResult.errors) {
-      //   return;
-      // }
 
-      // const asyncResult = await validateAsync(this.props.name, { ... this.state });
+    this.setState({ value, isTouched: true }, async () => {
+      const { value, isTouched } = this.state;
+      onValidate && isTouched && onValidate(name, value);
     })
   }
 
   private handleInputChange(e: any): void {
-    const value = e.target ? e.target.value : e
-    this.setState({ value, isPristine: false }, () => {
-      // validate sync only for current component
+    const { onValidate, name, validateUntouched } = this.props;
+    const val = e.target ? e.target.value : e
+
+    this.setState({ value: val, isPristine: false }, () => {
+      const { value, isTouched } = this.state;
+      onValidate && (isTouched || validateUntouched) && onValidate(name, value);
     })
   }
 
@@ -99,6 +123,7 @@ export const Input = (props: any) => (
       <InputPure
         {...props}
         registerInput={context.registerInput}
+        onValidate={context.validate}
       />
     }
   </FormContextConsumer>

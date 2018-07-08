@@ -1,10 +1,10 @@
-import { IComponentProps } from './common'
+import { IComponentProps, StrapEventType, TEventCallback } from './common'
 import { ReactNode } from "react";
 
-export type TEventCallback = (event: any) => void
-
-export interface IInputProps extends IComponentProps {
-  registerInput: (inputName: string, inputState: TInputState, onEvent: TEventCallback) => void,
+export interface IInputPureProps extends IComponentProps {
+  registerInput: (inputName: string, onEvent: TEventCallback) => void,
+  onValidate?: (inputName: string, inputValue: any) => void
+  validateUntouched?: boolean
   value?: any
   render?: (props: TInputRendererProps) => ReactNode
   onBlurValidation?: any,
