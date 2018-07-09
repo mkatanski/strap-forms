@@ -29,6 +29,7 @@ export class InputPure extends React.Component<IInputPureProps> {
     isPristine: true,
     isTouched: false,
     isValid: false,
+    validationMessages: [],
   }
 
   public componentDidMount() {
@@ -50,57 +51,62 @@ export class InputPure extends React.Component<IInputPureProps> {
   }
 
   private onValidationComplete(data: TValidationResult) {
+
+    const messages = data.messages || [];
+
     if (data.type === ValidationResultType.Success) {
-      this.setState({ isValid: true });
+      this.setState({ isValid: true, validationMessages: messages });
     }
 
     if (data.type === ValidationResultType.Error) {
-      this.setState({ isValid: false });
+      this.setState({ isValid: false, validationMessages: messages });
     }
 
     if (data.type === ValidationResultType.Warning) {
-      this.setState({ isValid: false });
+      this.setState({ isValid: false, validationMessages: messages });
     }
   }
 
   private get rendererProps(): TInputRendererProps {
     return {
+      name: this.props.name,
       className: this.props.className,
       onChange: this.handleInputChange,
       onBlur: this.handleInputBlur,
       value: this.state && this.state.value,
-      name: this.props.name,
+      isPristine: this.state && this.state.isPristine,
+      isTouched: this.state && this.state.isTouched,
+      isValid: this.state && this.state.isValid,
+      validationMessages: this.state && this.state.validationMessages,
     }
+  }
+
+  private runValidation() {
+    const { onValidate, name, validateUntouched } = this.props;
+    const { value, isTouched } = this.state;
+    onValidate && (isTouched || validateUntouched) && onValidate(name, value);
   }
 
   private handleInputBlur(e: any): void {
     const { onValidate, name } = this.props;
     const value = e.target ? e.target.value : e
 
-    this.setState({ value, isTouched: true }, async () => {
-      const { value, isTouched } = this.state;
-      onValidate && isTouched && onValidate(name, value);
-    })
+    this.setState({ value, isTouched: true }, this.runValidation)
   }
 
   private handleInputChange(e: any): void {
     const { onValidate, name, validateUntouched } = this.props;
-    const val = e.target ? e.target.value : e
+    const value = e.target ? e.target.value : e
 
-    this.setState({ value: val, isPristine: false }, () => {
-      const { value, isTouched } = this.state;
-      onValidate && (isTouched || validateUntouched) && onValidate(name, value);
-    })
+    this.setState({ value, isPristine: false }, this.runValidation)
   }
 
   private defaultRenderer(componentProps: TInputRendererProps): ReactNode {
     return (
       <input
-        className={componentProps.className}
+        {...componentProps}
         onChange={componentProps.onChange.bind(this)}
         onBlur={componentProps.onBlur.bind(this)}
-        value={componentProps.value}
-        name={componentProps.name}
       />
     )
   }

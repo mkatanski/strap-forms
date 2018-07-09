@@ -234,9 +234,12 @@ describe('Input', () => {
     it('should has valid state when validation is complete', () => {
       const validationResult: TValidationResult = {
         type: ValidationResultType.Success,
+        messages: ['message1', 'message2']
       }
 
       expect(input.state('isValid')).toBe(false);
+      expect(input.state('validationMessages')).toEqual([]);
+
 
       eventCallback({
         type: StrapEventType.onValidateDone,
@@ -244,16 +247,19 @@ describe('Input', () => {
       });
 
       expect(input.state('isValid')).toBe(true);
+      expect(input.state('validationMessages')).toEqual(['message1', 'message2']);
     })
 
     it('should has invalid state when validation is complete and result is error', () => {
       const validationResult: TValidationResult = {
         type: ValidationResultType.Error,
+        messages: ['message1', 'message2']
       }
 
       input.setState({ isValid: true });
 
       expect(input.state('isValid')).toBe(true);
+      expect(input.state('validationMessages')).toEqual([]);
 
       eventCallback({
         type: StrapEventType.onValidateDone,
@@ -261,16 +267,19 @@ describe('Input', () => {
       });
 
       expect(input.state('isValid')).toBe(false);
+      expect(input.state('validationMessages')).toEqual(['message1', 'message2']);
     })
 
     it('should has invalid state when validation is complete and result is warning', () => {
       const validationResult: TValidationResult = {
         type: ValidationResultType.Warning,
+        messages: ['message1', 'message2']
       }
 
       input.setState({ isValid: true });
 
       expect(input.state('isValid')).toBe(true);
+      expect(input.state('validationMessages')).toEqual([]);
 
       eventCallback({
         type: StrapEventType.onValidateDone,
@@ -278,6 +287,23 @@ describe('Input', () => {
       });
 
       expect(input.state('isValid')).toBe(false);
+      expect(input.state('validationMessages')).toEqual(['message1', 'message2']);
+    })
+
+    it('should contains list of error messages when validation is complete', () => {
+      const validationResult: TValidationResult = {
+        type: ValidationResultType.Success,
+      }
+
+      input.setState({ validationMessages: ['message1', 'message2'] });
+
+      eventCallback({
+        type: StrapEventType.onValidateDone,
+        data: validationResult
+      });
+
+      expect(input.state('validationMessages')).toEqual([]);
+
     })
 
   })

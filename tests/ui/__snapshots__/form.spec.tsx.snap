@@ -7,9 +7,13 @@ exports[`Form accepts inputs as children and call registerInput 1`] = `
 >
   <input
     className={undefined}
+    isPristine={true}
+    isTouched={false}
+    isValid={false}
     name="input1"
     onBlur={[Function]}
     onChange={[Function]}
+    validationMessages={Array []}
     value="test"
   />
 </form>
@@ -19,9 +23,13 @@ exports[`Form renders with custom component and calls registerInput 1`] = `
 <div>
   <input
     className={undefined}
+    isPristine={true}
+    isTouched={false}
+    isValid={false}
     name="input2"
     onBlur={[Function]}
     onChange={[Function]}
+    validationMessages={Array []}
     value=""
   />
 </div>

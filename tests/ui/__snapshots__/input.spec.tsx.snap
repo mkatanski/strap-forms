@@ -3,9 +3,13 @@
 exports[`Input basic checks renders with custom class name 1`] = `
 <input
   className="customCssClass"
+  isPristine={true}
+  isTouched={false}
+  isValid={false}
   name="customClassName"
   onBlur={[Function]}
   onChange={[Function]}
+  validationMessages={Array []}
   value=""
 />
 `;
@@ -21,9 +25,13 @@ exports[`Input basic checks renders with custom component 1`] = `
 
 exports[`Input basic checks renders with default component 1`] = `
 <input
+  isPristine={true}
+  isTouched={false}
+  isValid={false}
   name="test input"
   onBlur={[Function]}
   onChange={[Function]}
+  validationMessages={Array []}
   value=""
 />
 `;
@@ -31,36 +39,52 @@ exports[`Input basic checks renders with default component 1`] = `
 exports[`Input basic checks renders with default component and initial value 1`] = `
 <input
   className={undefined}
+  isPristine={true}
+  isTouched={false}
+  isValid={false}
   name="defaultInput"
   onBlur={[Function]}
   onChange={[Function]}
+  validationMessages={Array []}
   value="some value"
 />
 `;
 
 exports[`Input basic checks updates its value on blur 1`] = `
 <input
+  isPristine={true}
+  isTouched={true}
+  isValid={false}
   name="test input"
   onBlur={[Function]}
   onChange={[Function]}
+  validationMessages={Array []}
   value="new value on blur"
 />
 `;
 
 exports[`Input basic checks updates its value on change 1`] = `
 <input
+  isPristine={false}
+  isTouched={false}
+  isValid={false}
   name="test input"
   onBlur={[Function]}
   onChange={[Function]}
+  validationMessages={Array []}
   value="new value"
 />
 `;
 
 exports[`Input basic checks updates its value when prop is changed 1`] = `
 <input
+  isPristine={false}
+  isTouched={false}
+  isValid={false}
   name="test input"
   onBlur={[Function]}
   onChange={[Function]}
+  validationMessages={Array []}
   value="changed value"
 />
 `;

@@ -16,6 +16,7 @@ export type TInputState = {
   isPristine: boolean
   isTouched: boolean
   isValid: boolean
+  validationMessages: Array<string>
 }
 
 export type TInputRendererProps = {
@@ -24,4 +25,8 @@ export type TInputRendererProps = {
   onBlur: (e: any) => void,
   value: any,
   name: string,
+  isPristine: boolean,
+  isTouched: boolean,
+  isValid: boolean,
+  validationMessages: Array<string>
 }

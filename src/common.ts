@@ -31,9 +31,9 @@ export type TValidationResult = {
    */
   type: ValidationResultType
   /**
-   * Optional message that should be displayed
+   * Optional messages list that should be displayed
    */
-  message?: string
+  messages?: Array<string>
 }
 
 export type TEventCallback = (event: any) => void
