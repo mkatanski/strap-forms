@@ -81,12 +81,16 @@ export interface IValidationClass extends StrapValidator {
 /**
  * @hidden
  */
-export enum ValidationSteps {
-  onChange,
-  onBlur,
-  onSubmit
+export enum ValidationStage {
+  onChange = 'onChange',
+  onBlur = 'onBlur',
+  onSubmit = 'onSubmit',
+  validate = 'validate'
 }
 
+export type TValidator = TValidationMethod | IValidationClass
+export type TValidators = Array<TValidator>
+export type TValidationSteps = Array<TValidators>
 
 /**
  * Method which is triggered in each validation process
@@ -102,7 +106,7 @@ export type TValidationMethod = (inputValue: any, formValues: TFormValues) => an
 export type TStepMethod = (inputValue: any, formValues: TFormValues) => void
 
 export type TInputsList = {
-  [key: string]: Array<TValidationMethod | IValidationClass>
+  [key: string]: TValidationSteps
 }
 
 export type TFormValues = {

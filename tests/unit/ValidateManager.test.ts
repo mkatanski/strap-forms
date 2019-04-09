@@ -3,7 +3,7 @@ import {
   TFormValues,
   IValidationClass,
   StrapValidator,
-  ValidationSteps
+  ValidationStage
 } from '../../src/Validation/';
 
 describe('ValidationManager', () => {
@@ -32,7 +32,7 @@ describe('ValidationManager', () => {
       expect(vm.inputs.input1).toBeDefined();
       expect(Array.isArray(vm.inputs.input1)).toBe(true);
       expect(vm.inputs.input1.length).toBe(1);
-      expect(vm.inputs.input1[0]).toEqual(cb);
+      expect(vm.inputs.input1[0]).toEqual([cb]);
     });
 
     it('should add new Validator method for multiple inputs', () => {
@@ -49,8 +49,8 @@ describe('ValidationManager', () => {
       expect(Array.isArray(vm.inputs.input2)).toBe(true);
       expect(vm.inputs.input1.length).toBe(1);
       expect(vm.inputs.input2.length).toBe(1);
-      expect(vm.inputs.input1[0]).toEqual(cb);
-      expect(vm.inputs.input2[0]).toEqual(cb);
+      expect(vm.inputs.input1[0]).toEqual([cb]);
+      expect(vm.inputs.input2[0]).toEqual([cb]);
     });
 
     it('should add multiple Validator methods for specific input', () => {
@@ -64,9 +64,8 @@ describe('ValidationManager', () => {
 
       expect(vm.inputs.input1).toBeDefined();
       expect(Array.isArray(vm.inputs.input1)).toBe(true);
-      expect(vm.inputs.input1.length).toBe(2);
-      expect(vm.inputs.input1[0]).toEqual(cb1);
-      expect(vm.inputs.input1[1]).toEqual(cb2);
+      expect(vm.inputs.input1.length).toBe(1);
+      expect(vm.inputs.input1[0]).toEqual([cb1, cb2]);
     });
 
     it('should has inputs sealed', () => {
@@ -79,10 +78,10 @@ describe('ValidationManager', () => {
       vm.registerValidator('input1', cb);
 
       try {
-        vm.inputs.input1 = [test];
+        vm.inputs.input1 = [[test]];
       } catch (e) { }
 
-      expect(vm.inputs.input1[0]).toEqual(cb);
+      expect(vm.inputs.input1[0]).toEqual([cb]);
     })
   })
 
@@ -324,7 +323,7 @@ describe('ValidationManager', () => {
       }
 
       vm.registerValidator('street', new Test());
-      vm.validateAll(formValues, ValidationSteps.onChange);
+      vm.validateAll(formValues, ValidationStage.onChange);
 
       expect(executed).toEqual([{ value: 'Avenue Street', allValues: formValues, method: 'onChange'}]);
     })
@@ -345,7 +344,7 @@ describe('ValidationManager', () => {
       }
 
       vm.registerValidator('street', new Test());
-      vm.validate('street', formValues, ValidationSteps.onChange);
+      vm.validate('street', formValues, ValidationStage.onChange);
 
       expect(executed).toEqual([{ value: 'Avenue Street', allValues: formValues, method: 'onChange'}]);
     })
@@ -366,7 +365,7 @@ describe('ValidationManager', () => {
       }
 
       vm.registerValidator('second_name', new Test());
-      vm.validateAll(formValues, ValidationSteps.onBlur);
+      vm.validateAll(formValues, ValidationStage.onBlur);
 
       expect(executed).toEqual([{ value: 'Doe', allValues: formValues, method: 'onBlur'}]);
     })
@@ -387,7 +386,7 @@ describe('ValidationManager', () => {
       }
 
       vm.registerValidator('second_name', new Test());
-      vm.validate('second_name', formValues, ValidationSteps.onBlur);
+      vm.validate('second_name', formValues, ValidationStage.onBlur);
 
       expect(executed).toEqual([{ value: 'Doe', allValues: formValues, method: 'onBlur'}]);
     })
@@ -456,7 +455,7 @@ describe('ValidationManager', () => {
       Object.keys(formValues)
         .forEach((inputName) => { vm.registerValidator(inputName, new NoSpace()) });
 
-      const validation_results = await vm.validateAll(formValues, ValidationSteps.onChange);
+      const validation_results = await vm.validateAll(formValues, ValidationStage.onChange);
 
       expect(validation_results).toEqual([true, null, false]);
     })
@@ -484,12 +483,65 @@ describe('ValidationManager', () => {
 
       Object.keys(formValues)
         .forEach((inputName) => { vm.registerValidator(inputName, noSpace) });
-      const validation_results = await vm.validateAll(formValues, ValidationSteps.onChange);
+      const validation_results = await vm.validateAll(formValues, ValidationStage.onChange);
       expect(validation_results).toEqual([true, 'prevented', false]);
 
       formValues.second_name = 'Example'
-      const validation_results2 = await vm.validateAll(formValues, ValidationSteps.onChange);
+      const validation_results2 = await vm.validateAll(formValues, ValidationStage.onChange);
       expect(validation_results2).toEqual([true, true, false]);
+    })
+
+  })
+
+  describe('registerValidatorsStep', () => {
+    let vm: any;
+
+    beforeEach(() => {
+      vm = new ValidationManager();
+    })
+
+    it('method should exists', () => {
+      expect(vm.registerValidatorsStep).toBeDefined();
+    })
+
+    it('should accept array of validators and perform validation for specific input', () => {
+      let cb1Val = '';
+      let cb2Val = '';
+
+      const cb1 = (value: any) => { cb1Val = value; }
+      const cb2 = (value: any) => { cb2Val = value; }
+
+      vm.registerValidatorsStep('input1', [cb1, cb2]);
+      vm.validate('input1', { input1: 'testValue' });
+
+      expect(vm.inputs.input1.length).toBe(1);
+      expect(cb1Val).toBe('testValue');
+      expect(cb2Val).toBe('testValue');
+    })
+
+    it('should register multiple steps for input and validate those steps', () => {
+      let cb1Val = '';
+      let cb2Val = '';
+
+      const cb1 = (value: any) => { cb1Val = value; }
+      const cb2 = (value: any) => { cb2Val = value; }
+
+      vm.registerValidatorsStep('input1', [cb1]);
+      vm.registerValidatorsStep('input1', [cb2]);
+      vm.validate('input1', { input1: 'testValue' });
+
+      expect(Array.isArray(vm.inputs.input1)).toBe(true);
+      expect(vm.inputs.input1.length).toBe(2);
+      expect(vm.inputs.input1[0]).toEqual([cb1]);
+      expect(vm.inputs.input1[1]).toEqual([cb2]);
+
+      expect(cb1Val).toBe('testValue');
+      expect(cb2Val).toBe('testValue');
+    })
+
+    it('should prevent validation of second step if first contains error', () => {
+
+
     })
 
   })

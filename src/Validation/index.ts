@@ -8,7 +8,7 @@ import {
   TInputsList,
   TStepMethod,
   TValidationMethod,
-  ValidationSteps
+  ValidationStage
 } from './types'
 
 import { StrapValidator } from './StrapValidator'
@@ -16,7 +16,7 @@ import { StrapValidator } from './StrapValidator'
 export {
   ValidationManager,
   IValidationClass,
-  ValidationSteps,
+  ValidationStage,
   TValidationMethod,
   TStepMethod,
   TInputsList,
