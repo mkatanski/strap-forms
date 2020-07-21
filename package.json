@@ -74,7 +74,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "bootstrap": "^4.0.0-alpha.6",
     "bowser": "^1.6.1",
-    "codecov": "^2.3.0",
+    "codecov": "^3.7.1",
     "commitizen": "^2.9.5",
     "css-loader": "^0.28.4",
     "cz-conventional-changelog-components": "^1.0.0",
