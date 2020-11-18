@@ -105,7 +105,7 @@
     "requestanimationframe": "^0.0.23",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.5",
-    "semantic-release": "^8.0.3",
+    "semantic-release": "^17.2.3",
     "shelljs": "^0.7.5",
     "storybook-addon-a11y": "^3.0.0",
     "validate-commit-msg": "^2.10.1",
